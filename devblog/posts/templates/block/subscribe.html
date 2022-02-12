@@ -1,0 +1,25 @@
+{% comment %}
+<div class="widget-sidebar">
+    <h5 class="sidebar-title">Subscribe</h5>
+    <div class="sidebar-content">
+        <p>Dapatkan tulisan terbaru Django dan Python melalui email</p>
+        <form method="post" action="{% url 'sibmail:nano_sub' %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <p>
+                    <input type="email" name="email" required id="id_email" placeholder="Email" class="form-control">
+                </p>
+                <p>
+                    <input type="text" name="first_name" maxlength="30" required id="id_first_name" placeholder="First name" class="form-control">
+                </p>
+                <p>
+                    <input type="text" name="last_name" maxlength="50" required id="id_last_name" placeholder="Last name" class="form-control">
+                </p>
+                <p>
+                    <input type="submit" value="Subscribe" class="btn btn-primary">
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endcomment %}

@@ -1,0 +1,177 @@
+{% extends 'admin/base_site.html' %}
+{% load i18n static %}
+
+{% block title %}{% block content_title %}Dashboard Staff {% endblock %}{% endblock %}
+
+{% block content %}
+<div class="col">
+    {% if request.user.is_staff %}
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    Area Chart Example
+                </div>
+                <div class="card-body"><canvas id="myAreaChart" width="100%" height="40"></canvas></div>
+            </div>
+        </div>
+        
+        <div class="col-sm-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    Semua Artikel
+                </div>
+                <div class="card-body">
+                    <canvas id="myPieChart" width="100%" height="40"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col">
+            <div class="card card-primary mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    {% trans "My Profile Account" %}
+                </div>
+
+                <div class="card-body">
+                    <h2 class="title-left">Informasi dasar</h2>
+                    <div class="row">
+                        <div class="col-12">
+                            <nav>
+                                <div class="nav nav-pills mb-3" id="list-tab" role="tablist">
+                                    <a class="nav-link active" id="list-home-list" data-toggle="tab" href="#list-home" role="tab" aria-controls="home">Home</a>
+                                    <a class="nav-link" id="list-profile-list" data-toggle="tab" href="#list-profile" role="tab" aria-controls="profile">Profile</a>
+                                    <a class="nav-link" id="list-comment-list" data-toggle="tab" href="#list-comment" role="tab" aria-controls="comment">Comment</a>
+                                    <a class="nav-link" id="list-settings-list" data-toggle="tab" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
+                                </div>
+                            </nav>
+                        </div>
+                        
+                        <div class="col-12">
+                            <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-pane fade show text-justify active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                                    <p><span class="text-primary">Selamat datang,</span> di member area.</p>
+                                    <p>Pada member area, kamu dapat mengupdate informasi yang dibutuhkan. Mulai dari informasi login, username dan password, email, komentar yang sudah dibuat, dan lainnya.</p>
+                                    <p>Jika kamu mau menyampaikan sesuatu, silahkan kirim pesan kepada kami.</p>
+                                </div>
+    
+                                <div class="tab-pane text-justify fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                                    <h3 class="text-primary">Akun kamu</h3>
+                                    <p>Ringkasan informasi akun kamu</p>
+                                    <table class="table table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 150px;">Event type</th>
+                                                <th>Description</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Username</td>
+                                                <td>
+                                                    <p>Kamu saat ini login sebagai <strong>{{ request.user }}</strong>, kamu tidak diperkenankan mengubah username.</p>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Nama Lengkap</td>
+                                                <td>
+                                                    {% if request.user.get_full_name %}
+                                                    {{ request.user.get_full_name }}
+                                                    {% else %}
+                                                    Sepertinya kamu belum memiliki nama. Kamu bisa memberikan nama <a href="#">di sini</a>
+                                                    {% endif %}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Email</td>
+                                                <td>{{ request.user.email }}<p>Email berperan sangat penting, misalnya kamu lupa password. Maka, bisa me<em>reset</em> password yang informasi dan caranya akan dikirim ke email yang terdaftar. Dan kamu juga akan mendapatkan update terbaru dari kami.</p></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Terakhir Login</td>
+                                                <td>{{ request.user.last_login }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Mendaftar</td>
+                                                <td>
+                                                    {{ request.user.date_joined }}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Info lainnya</td>
+                                                <td>
+                                                    Tidak ada informasi lain yang bisa ditampilkan
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            
+                                <div class="tab-pane text-justify fade" id="list-comment" role="tabpanel" aria-labelledby="list-comment-list">
+                                    <h3 class="text-primary">Komentar yang sudah kamu buat</h3>
+                                    <div class="alert-primary">Fitur ini masih dalam tahap pengembangan</div>
+                                </div>
+                            
+                                <div class="tab-pane text-justify fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
+                                    <h3 class="text-primary">Pengaturan lanjutan</h3>
+                                    <div class="alert-primary">Fitur ini masih dalam tahap pengembangan</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-footer clearfix">
+                    object list
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+
+<script src="{% static 'vendor/chart.js/Chart.bundle.min.js' %}"></script>
+
+<script defer>
+  var graphColor = [];
+  var dataLength = {{ chart.data | safe }};
+
+  var idatalength = dataLength.length;
+  i = 0;
+  while (i <= idatalength) {
+    var randomR = Math.floor((Math.random() * 130 ) + 100);
+    var randomG = Math.floor((Math.random() * 130 ) + 100);
+    var randomB = Math.floor((Math.random() * 130 ) + 100);
+
+    var graphBackground = "rgb(" + randomR + ", " + randomG + ", " + randomB + ")";
+    graphColor.push(graphBackground);
+    i++;
+  }
+  
+  var mypiechart = document.getElementById("myPieChart").getContext("2d");
+  var chartcontent = new Chart(mypiechart, {
+    type: 'pie',
+    data: {
+      labels: {{ chart.labels | safe }},
+      datasets: [{
+        label: 'Category',
+        backgroundColor: graphColor,
+        data: dataLength
+      }]
+    },
+    options: {
+      responsive: true,
+      legend: {
+        position: 'bottom'
+      },
+    }
+    });
+</script>
+{% endblock %}

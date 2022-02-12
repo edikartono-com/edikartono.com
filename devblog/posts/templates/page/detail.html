@@ -1,0 +1,94 @@
+{% extends 'core/base_site.html' %}
+{% load static breadcrumbs %}
+
+{% block add_meta %}
+<title>{{ page.title }}</title>
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block add_style %}
+<link
+    rel="dns-prefetch"
+    href="http://sumo.com">
+<link
+    rel="dns-prefetch"
+    href="http://load.sumo.com">
+<link
+    rel="prefetch"
+    as="style" onload="this.rel='stylesheet'"
+    type="font/ttf"
+    href="/static/CACHE/fonts/ionicons.ttf">
+
+  
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel='stylesheet' href="{% static 'vendor/ionicons/css/ionicons.post.css' %}">
+  
+{% endblock %}
+
+{% block page_intro %}
+<div
+ class="intro intro-single route bg-image"
+ {% if page.image %} style="background-image: url('{{ page.image.url }}')" {% endif %}>
+<div class="overlay-mf"></div>
+{% endblock %}
+{% block intro_title %}<div class="intro-title mb-4">{{ page.title }}</div>{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb "Home" "/" %}
+  {% breadcrumb page.title page.slug %}
+  {% render_breadcrumbs %}
+{% endblock %}
+
+{% block page_main %}
+<!-- ======= Blog Single Section ======= -->
+<section class="blog-wrapper pt-4" id="blog">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+              <article role="article" about="{{ page.get_absolute_url }}" typeof="schema:Article">
+                <div class="post-box">
+                    {% if page.image %}
+                    <div property="schema:image" class="post-thumb">
+                    <img typeof="foaf:Image" src="{{ blog.image.url }}" class="img-fluid" alt="{{ page.title }}">
+                    </div>
+                    {% endif %}
+                    <span property="schema:name" content="{{ page.title }}" class="rdf-meta hidden"></span>
+                <div class="post-meta">
+                  <h1 class="article-title">{{ page.page_title }}</h1>
+                  <ul>
+                    <li>
+                      <span class="ion-ios-person"></span><span rel="schema:author"><span lang="id" about="{{ blog.author }}" typeof="schema:Person" property="schema:name" datatype="">
+                      <a href="#">edikartono.com</a></span></span>
+                    </li>
+                    <li>
+                      <span class="ion-pricetag"></span>
+                      <span property="schema:dateCreated" content="{{ page.create }}">
+                        Create: {{ page.create }}</span>
+                    </li>
+                    <li>
+                      <span class="ion-chatbox"></span>
+                      <span property="schema:dataModified" content="{{ page.modified }}">
+                          Update: {{ page.modified }}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+                <div class="article-content" property="schema:text">
+                  {{ page.body | safe }}
+                </div>
+              </div>
+              </article>             
+            </div>
+          </div>
+        </div>
+</section><!-- End Blog Single Section -->
+{% endblock %}
+
+{% block add_js %}
+  <!-- Vendor JS Files -->
+  <script src="{% static 'vendor/jquery/jquery.min.js' %}" defer></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}" defer></script>
+  <script src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}" defer></script>
+  <!-- Template Main JS File -->
+  <script src="{% static 'js/custom.js' %}" defer></script>
+{% endblock %}

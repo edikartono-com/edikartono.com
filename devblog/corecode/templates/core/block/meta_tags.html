@@ -1,0 +1,24 @@
+{% load i18n %}
+{% get_current_language as LANGUAGE_CODE %}
+{% autoescape on %}
+
+{% if post_meta %}
+{% for meta in post_meta %}
+<title>{{ meta.title }} | {{ meta.term }} | Edi Kartono</title>
+<meta name="description" content="{{ meta.summary }}"/>
+<meta name="created" content="{{ meta.create|date:'Y-m-d H:i:s' }}"/>
+<meta name="author" content="{{ meta.author }}"/>
+<meta property="og:title" content="{{ meta.title }} | {{ meta.term }} | Edi Kartono"/>
+<meta property="og:type" content="article"/>
+<meta property="og:description" content="{{ meta.summary }}"/>
+<meta property="og:locale" content="{{ LANGUAGE_CODE }}"/>
+<meta property="og:image" content="https://edikartono.com{{ meta.image }}"/>
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@edikartono" />
+<meta name="twitter:title" content="{{ meta.title }} | {{ meta.term }} | Edi Kartono" />
+<meta name="twitter:description" content="{{ meta.summary }}" />
+<meta name="twitter:image" content="https://edikartono.com{{ meta.image }}" />
+{% endfor %}
+{% endif %}
+
+{% endautoescape %}

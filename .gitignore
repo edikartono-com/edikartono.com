@@ -1,0 +1,11 @@
+.vscode/
+*/.env
+env/
+*/*.sqlite3
+*~
+devblog/*/__pycache__/
+!devblog/akun/migrations/*_initial.py
+!devblog/*/migrations/0001_initial.py
+devblog/*/migrations/
+**/__pycache__/
+devblog/media/

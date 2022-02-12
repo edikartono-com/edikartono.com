@@ -1,0 +1,42 @@
+<div class="widget-sidebar sidebar-search">
+    <h5 class="sidebar-title">Cari :</h5>
+    <div class="sidebar-content">
+        <form method="GET" action="{% url 'blog:search' q='q' %}">
+            {% csrf_token %}
+            <div class="input-group">
+                <input name="q" type="text" class="form-control" placeholder="Cari ..." aria-label="Search for...">
+                <span class="input-group-btn">
+                    <button class="btn btn-secondary btn-search" type="submit">
+                        <span class="ion-android-search"></span>
+                    </button>
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="widget-sidebar">
+    <h5 class="sidebar-title">Terbaru</h5>
+    <div class="sidebar-content">
+        <ul class="list-sidebar">
+            {% for lp in lates_post %}
+            <li>
+                <a href="{{ lp.get_absolute_url }}">{{ lp.title|title }}</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+<div class="widget-sidebar">
+    <h5 class="sidebar-title">Kategori</h5>
+    <div class="sidebar-content">
+        <ul class="list-sidebar">
+            {% for menu in main_menu %}
+            <li>
+                <a href="{{ menu.get_absolute_url }}">{{ menu.name|title }}.</a>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,230 @@
+[
+  {
+    "model": "corecode.contact",
+    "pk": "e2a8c46b4489407098b4cfb361186a6d",
+    "fields": {
+      "title": "Facebook Page",
+      "body": "Halaman Facebook Edi Kartono",
+      "icon": "fab fa-facebook",
+      "link": "https://web.facebook.com/edikartonocom"
+    }
+  },
+  {
+    "model": "corecode.contact",
+    "pk": "5c7a4caa81a649efbd142f69cf0dce8f",
+    "fields": {
+      "title": "Instagram",
+      "body": "Follow instagram kami",
+      "icon": "fab fa-instagram-square",
+      "link": "https://www.instagram.com/edi.kartono/"
+    }
+  },
+  {
+    "model": "corecode.contact",
+    "pk": "ec1a636f4ed34689a9378375a102b166",
+    "fields": {
+      "title": "Twitter",
+      "body": "Follow Akun Twitter Kami",
+      "icon": "fab fa-twitter",
+      "link": "https://twitter.com/edikartono"
+    }
+  },
+  {
+    "model": "corecode.contact",
+    "pk": "4a8dbf9112a3481aa95e1566ed47157f",
+    "fields": {
+      "title": "Pinterest",
+      "body": "Follow akun pinterest",
+      "icon": "fab fa-pinterest",
+      "link": "https://id.pinterest.com/edikartono/"
+    }
+  },
+  {
+    "model": "corecode.contact",
+    "pk": "aaae104baa35407d9bbaa4611bb3b58b",
+    "fields": {
+      "title": "Tokopedia",
+      "body": "<p>Mau buku Python dan lainnya toko Kami di Tokopedia</p>",
+      "icon": "fas fa-store",
+      "link": "https://www.tokopedia.com/edikartono"
+    }
+  },
+  {
+    "model": "corecode.contact",
+    "pk": "12ac09df30f24ae7a082dc228061fee7",
+    "fields": {
+      "title": "Telegram",
+      "body": "<p>Chat pribadi dengan saya melalui Telegram</p>",
+      "icon": "fab fa-telegram",
+      "link": "https://t.me/edikartono"
+    }
+  },
+  {
+    "model": "corecode.contact",
+    "pk": "474a2beb05b94f5f8d828fedf4269213",
+    "fields": {
+      "title": "Youtube",
+      "body": "Channel youtube kami, untuk Anda yang suka materi video",
+      "icon": "fab fa-youtube",
+      "link": "https://www.youtube.com/c/EdiKartonoCom"
+    }
+  },
+  {
+    "model": "corecode.contact",
+    "pk": "80e81ae0d272414180f563dbfae004fd",
+    "fields": {
+      "title": "Linkedin",
+      "body": "Channel youtube kami, untuk Anda yang suka materi video",
+      "icon": "fab fa-linkedin",
+      "link": "https://www.linkedin.com/in/edikartono/?originalSubdomain=id"
+    }
+  },
+  {
+    "model": "corecode.countersec",
+    "pk": 1,
+    "fields": {
+      "countd": 43,
+      "icon": "ion-checkmark-round",
+      "name": "WORK COMPLETED"
+    }
+  },
+  {
+    "model": "corecode.countersec",
+    "pk": 2,
+    "fields": {
+      "countd": 2,
+      "icon": "ion-ios-calendar-outline",
+      "name": "YEARS OF EXPERIENCE"
+    }
+  },
+  {
+    "model": "corecode.countersec",
+    "pk": 3,
+    "fields": {
+      "countd": 28,
+      "icon": "ion-ios-people",
+      "name": "TOTAL CLIENTS"
+    }
+  },
+  {
+    "model": "corecode.countersec",
+    "pk": 4,
+    "fields": {
+      "countd": 0,
+      "icon": "ion-ribbon-a",
+      "name": "AWARD WON"
+    }
+  },
+  {
+    "model": "corecode.intro",
+    "pk": "ea99bb8e3b70463bb305797554664e8d",
+    "fields": {
+      "name": "Dev Blog",
+      "desc": "Dev Blog dibuat menggunakan web framework django",
+      "intro": "Welcome Dev Blog",
+      "subtitle": "Python Enthusiast, Django Framework, Backend Wev Dev",
+      "bg_image": "inline-image/intro-bg.webp"
+    }
+  },
+  {
+    "model": "corecode.featured",
+    "pk": "e1526df6e06042cf8a078863ddfeba33",
+    "fields": {
+      "title": "Belajar Python",
+      "body": "Belajar bahasa pemrograman python secara mandiri",
+      "icon_name": "ion-social-python"
+    }
+  },
+  {
+    "model": "corecode.featured",
+    "pk": "105a4a12445f4bebabf6a63d09eb03b7",
+    "fields": {
+      "title": "Belajar Linux",
+      "body": "Belajar GNU/Linux OS Desktop Distro Debian, Devuan, Ubuntu, dan turunannya",
+      "icon_name": "ion-social-tux"
+    }
+  },
+  {
+    "model": "corecode.featured",
+    "pk": "2973b4cbf6c048d2b2e94e45fb9037a1",
+    "fields": {
+      "title": "Belajar Django",
+      "body": "Belajar membuat website menggunakan Web Framework Django",
+      "icon_name": "ion-ios-book"
+    }
+  },
+  {
+    "model": "corecode.featured",
+    "pk": "d52e4958f2ad440692e9c5ff3dffc937",
+    "fields": {
+      "title": "Web Dev",
+      "body": "Full Stack Web Development",
+      "icon_name": "ion-android-desktop"
+    }
+  },
+  {
+    "model": "corecode.featured",
+    "pk": "793223ae203f4e89b29d05664abe78e5",
+    "fields": {
+      "title": "Powerfull Tools",
+      "body": "Powerfull Tool",
+      "icon_name": "ion-wrench"
+    }
+  },
+  {
+    "model": "corecode.featured",
+    "pk": "07cbee4f996e4886b583576354126981",
+    "fields": {
+      "title": "Python Dev",
+      "body": "App Dev Python",
+      "icon_name": "ion-code-working"
+    }
+  },
+  {
+    "model": "corecode.poster",
+    "pk": "3bbe669a3a654b64a7fe79edda47657e",
+    "fields": {
+      "title": "Edi Kartono",
+      "body": "<p class=\"lead\">Hai, terimakasih sudah menggunakan dev blog. Ini adalah project pertama yang saya share setelah berkali-kali gagal, tentu saja dibuat menggunakan web framework Django. Meski sebenarnya saya belum puas dengan hasilnya, ha ha ha.... Kedepan masih terus akan saya kembangkan dengan menambahkan fitur lain (kalau bisa dan gak males, he he he)</p><p class=\"lead\">Saya berharap, meski masih jelek seperti ini bisa dijadikan bahan belajar untuk teman-teman yang baru di Django, tidak lupa juga saya meminta masukan untuk teman-teman yang sudah berpengalaman di Django, dari kode mungkin dari sisi keamanan dan peningkatan kualitas.</p>",
+      "image": "poster/2020-10/poster.jpg",
+      "info": "<p><span class=\"title-s\">Name: </span> <span>Edi Kartono</span></p><p><span class=\"title-s\">Profile: -</span></p><p><span class=\"title-s\">Email: </span> <span>bisnis@edikartono.com</span></p><p><span class=\"title-s\">Kontak: </span> <span> Silahkan lihat pada <a href=\"https://edikartono.com/kontak/\" target=\"_blank\">Kontak</a></span></p>",
+      "other": "Skill"
+    }
+  },
+  {
+    "model": "corecode.progress",
+    "pk": 1,
+    "fields": {
+      "poster": "3bbe669a3a654b64a7fe79edda47657e",
+      "name": "HTML",
+      "value": 60
+    }
+  },
+  {
+    "model": "corecode.progress",
+    "pk": 2,
+    "fields": {
+      "poster": "3bbe669a3a654b64a7fe79edda47657e",
+      "name": "CSS",
+      "value": 15
+    }
+  },
+  {
+    "model": "corecode.progress",
+    "pk": 3,
+    "fields": {
+      "poster": "3bbe669a3a654b64a7fe79edda47657e",
+      "name": "Python",
+      "value": 43
+    }
+  },
+  {
+    "model": "corecode.progress",
+    "pk": 4,
+    "fields": {
+      "poster": "3bbe669a3a654b64a7fe79edda47657e",
+      "name": "Django",
+      "value": 36
+    }
+  }
+]

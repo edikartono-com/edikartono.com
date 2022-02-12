@@ -1,0 +1,112 @@
+{% load static widget_tweaks %}
+<!DOCTYPE html>
+<html lang="id" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <title>{% block page_title %}{% endblock %} {{ request.intro.name }}</title>
+    <link rel="stylesheet" href="{% static 'css/account.css' %}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
+    <style>
+      input[type="checkbox"] {
+        display: inline-block !important;
+        width: 2rem !important;
+        height: 2rem !important;
+        margin: .1rem 10rem 0 0 !important;
+        vertical-align: middle !important;
+        background: cyan !important;
+        cursor: pointer !important;
+      }
+      input[type="checkbox"]:checked {
+        background: black !important;
+        cursor: pointer;
+      }
+      input[type="checkbox"] + label {
+        padding-left: 2.4rem !important;
+        color: #000 !important;
+      }
+    </style>
+  </head>
+  
+  <body class="bg-primary">
+    <div id="layoutAuthentication">
+      <div id="layoutAuthentication_content">
+        <main>
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-lg-6">
+                <div class="card shadow-lg border-0 rounded-lg mt-3">
+                  <div class="card-header">
+                    <h3 class="text-center font-weight-light my-4">
+                      {% block h3_title %}Title H3{% endblock %}
+                    </h3>
+                    {% if messages %}
+                    <div class="alert alert-warning">
+                      {% for message in messages %}        
+                      <p>{{ message }}</p>
+                      {% endfor %}
+                    </div>
+                    {% endif %}
+                  </div>
+                  <div class="card-body">
+                    {% block card_body %}
+                    <form method="POST">
+                      {% csrf_token %}
+                      {% for field in form.visible_fields %}
+                      <div class="row mt-3">
+                        <div class="col-md-12">
+                          <div class="form-floating mb-3 mb-md-0">
+                            {{ field | add_class:'form-control' }}                            
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                          </div>
+                        </div>
+                      </div>
+                      {% endfor %}
+                      {% if redirect_field_value %}
+                      <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                      {% endif %}
+                      <div class="mt-4 mb-0">
+                        <div class="d-grid"><button type="submit" class="btn btn-primary btn-block">
+                            {% block button_card %}Create Account{% endblock %} &raquo;
+                        </button>
+                        </div>
+                      </div>
+                    </form>
+                    {% endblock %}
+                  </div>
+                  <div class="card-footer text-center py-3">
+                    {% if user.is_authenticated %}
+                    <!--email-- <div class="small"><a href="{% url 'account_email' %}">Change E-mail</a></div> -->
+                    <div class="small"><a href="{% url 'account_logout' %}">Sign Out</a></div>
+                    {% else %}
+                    {% block go_to %}
+                    <div class="small"><a href="{{ login_url }}">Have an account? Go to login</a></div>
+                    <div class="small"><a href="{{ login_url }}">Need an account? Sign up!</a></div>
+                    {% endblock %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+      <div id="layoutAuthentication_footer">
+        <footer class="py-4 bg-light mt-auto">
+          <div class="container-fluid px-4">
+            <div class="d-flex align-items-center justify-content-between small">
+              <div class="text-muted">Copyright &copy; {{ request.intro.name }} 2021</div>
+              <div>
+                <a href="#">Privacy Policy</a>
+                &middot;
+                <a href="#">Terms &amp; Conditions</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+  </body>
+</html>

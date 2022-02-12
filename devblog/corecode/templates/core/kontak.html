@@ -1,0 +1,64 @@
+{% extends 'core/base_site.html' %}
+{% load static %}
+
+{% block add_style %}
+<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<link rel="preload"
+  as="style" onload="this.onload.null;this.rel='stylesheet'"
+  href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+  integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+  crossorigin="anonymous"/>
+  
+<script defer="preload">
+// Later on, after some condition has been met, we run the preloaded
+// JavaScript by inserting a <script> tag into the DOM.
+  var usedLaterScript = document.createElement('script');
+  usedLaterScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js';
+  document.getElementsByTagName('head')[0].appendChild(usedLaterScript);
+</script>
+{% endblock %}
+
+
+{% block add_meta %}
+<title>Kontak | Edi Kartono Terhubung Dengan Kami</title>
+<meta name="description" content="Terhubung dengan Edi Kartono melalui sosial media yang Anda miliki sekarang">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block page_main %}
+<!-- ======= Blog Single Section ======= -->
+<section class="blog-wrapper sect-pt4" id="blog">
+    <div class="container">
+        <div class="row">
+            {% for bio in object_list %}
+            <div class="col-sm-6">
+                <div class="card border-primary card-primary mb-3">
+                    <div class="card-header">
+                        {{ bio.title|title }}
+                    </div>
+    
+                    <div class="card-body text-primary">
+                        <div class="row">
+                            <div class="col-3"><i class="{{ bio.icon }} fa-4x"></i></div>
+                            <div class="col">
+                                {% if bio.link %}
+                                <h3 class="card-link">
+                                    <a class="btn btn-primary" href="{{ bio.link }}" target="_blank" rel="noopener noreferrer">{{ bio.title|title }}</a>
+                                </h3>
+                                {% else %}
+                                <h3 class="card-title">{{ bio.title|title }}</h3>
+                                {% endif %}
+                                <p class="card-description">
+                                    {{ bio.body|safe }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section><!-- End Blog Single Section -->
+{% endblock %}

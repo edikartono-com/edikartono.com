@@ -1,0 +1,16 @@
+[
+  {
+    "model": "posts.page",
+    "pk": "2c830b9d3104480eb35322897ade09b6",
+    "fields": {
+      "title": "Lisensi",
+      "summary":"",
+      "body": "<h2>Alhamdulillah</h2><p>Akhirnya saya memutuskan untuk membagikan <em>source code</em> blog saya, namun teman-teman jangan berharap banyak dari project ini. Sebab ini hanyalah project kecil, berupa web blog biasa saja, yang membedakan hanyalah bahasa dan framework yang digunakan. Sungguh tidak ada yang istimewa di dalamnya.</p><h2>Lisensi</h2><p>Meski devblog yang saya hasilkan ini masih jelek, namun tetap dirasa perlu menyematkan lisensi dalam penggunaannya. Bukanlah sebuah lisensi yang aneh-aneh, project ini saya beri lisensi <strong>GNU General Public License v3.0</strong>, agar siapa saja bisa memanfaatkan project ini untuk kepentingannya masing-masing.Silahkan kalian pelajari tentang <a href=\"https://github.com/edikartono-com/dev-blog/blob/main/LICENSE\">lisensi GNU V3.0</a>.</p><p>Namun karena project ini tidak murni 100% karya saya, maka bisa saja terdapat perbedaan lisensi diantaranya: Template (backend dan frontend) juga module. Masing-masing memiliki lisensinya sendiri.</p><h2>Cara Menggunakannya</h2><p>Sebenarnya tidak sulit menggunakan devblog, kalau kalian sudah bisa membaca halaman ini, itu artinya kalian berhasil menginstall dengan sempurna. Jadi, saya tidak harus membuat tutorialnya he he he ....</p><p>Pada setiap kode juga telah disematkan docs agar saya dan teman-teman tidak lupa bahwa baris kode tertentu akan melakukan apa.</p>",
+      "create": "2020-10-06T16:23:53+03:00",
+      "modified": "2021-09-19T13:20:30+03:00",
+      "image": "",
+      "slug": "disclaimer",
+      "visible": 1
+    }
+  }
+]

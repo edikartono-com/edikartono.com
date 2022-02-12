@@ -1,0 +1,167 @@
+{% extends 'core/base_site.html' %}
+{% load static head_tags breadcrumbs widget_tweaks %}
+
+{% block add_meta %}
+{% post_detail_tag blog.id %}
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block add_style %}
+<link
+    rel="dns-prefetch"
+    href="http://sumo.com">
+<link
+    rel="dns-prefetch"
+    href="http://load.sumo.com">
+<link
+    rel="prefetch"
+    as="style" onload="this.rel='stylesheet'"
+    type="font/ttf"
+    href="/static/CACHE/fonts/ionicons.ttf">
+
+<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'ckeditor/ckeditor/plugins/codesnippet/lib/highlight/styles/obsidian.css' %}">
+<link rel="stylesheet" href="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/ionicons/css/ionicons.post.css' %}">
+{% endblock %}
+
+{% block page_intro %}
+<div
+ class="intro intro-single route bg-image lazyload img-fluid"
+ style="background-image: url('{{ blog.img_thumb.url }}')"
+ data-safe-defer-class="lazyload">
+<div class="overlay-mf"></div>
+{% endblock %}
+{% block intro_title %}<div class="intro-title mb-4">{{ blog.title }}</div>{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb "Home" "/" %}
+  {% breadcrumb blog.term "." %}
+  {% breadcrumb blog.title blog.slug %}
+  {% render_breadcrumbs %}
+{% endblock %}
+
+{% block page_main %}
+<!-- ======= Blog Single Section ======= -->
+<section class="blog-wrapper sect-pt4" id="blog">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        
+        <article role="article" about="{{ blog.get_absolute_url }}" typeof="schema:Article">
+          <div class="post-box">
+            <div property="schema:image" class="post-thumb cover-mobile">
+              <img typeof="foaf:Image" width="640px" height="336px" data-src="{{ blog.image.url }}" data-sizes="auto" class="lazyload img-fluid" alt="{{ blog.title }}" data-safe-defer-class="lazyload">
+            </div>
+            <span property="schema:name" content="{{ blog.title }}" class="rdf-meta hidden"></span>
+            <div class="post-meta">
+              <h1 class="article-title">{{ blog.title|title }}</h1>
+              <ul>
+                <li>
+                  <span class="ion-ios-person"></span> <span rel="schema:author"><span lang="id" about="{{ blog.author }}" typeof="schema:Person" property="schema:name" datatype="">
+                    <a href="#"> {{ blog.author }}</a></span></span>
+                </li>
+                <li>
+                  <span class="ion-pricetag"></span>
+                  <a href="#"> {{ blog.term }}</a>
+                </li>
+                <li>
+                  <span class="ion-calendar"></span> <span property="schema:dateCreated" content="{{ blog.create }}">  {{ blog.create | date:'d M Y H:i:s T' }}</span><span property="schema:dateModified" content="{{ blog.update }}" class="rdf-meta hidden"></span>
+                </li>
+              </ul>
+            </div>
+            
+            <div class="article-content line-numbers" property="schema:text">
+              {{ blog.body | safe }}
+            </div>
+          </div>
+        </article>
+      </div><!--/col-md-8-->
+      
+      <div class="col-md-4">
+        {% include 'block/sidebar.html' %}
+
+        <div class="widget-sidebar widget-tags">
+          <h5 class="sidebar-title">Lainnya pada {{ blog.term }}</h5>
+          <div class="sidebar-content">
+            <ul>
+              {% for ra in related_post %}
+              <li>
+                <a href="{{ ra.get_absolute_url }}">{{ ra.title|title }}</a>
+              </li>
+              {% empty %}
+              <li>
+                <a>Belum ada artikel lainnya pada {{ blog.term|title }}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+
+        {% include 'block/subscribe.html' %}
+        
+      </div>
+    </div>
+  </div>
+</section><!-- End Blog Single Section -->
+{% endblock %}
+
+{% block add_js %}
+<script src="{% static 'vendor/jquery/jquery.min.js' %}" ></script>
+<script defer src="{% static 'vendor/bootstrap/js/bootstrap.bundle.js' %}" ></script>
+<script defer src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}" ></script>
+<script defer src="{% static 'ckeditor/ckeditor/plugins/codesnippet/lib/highlight/highlight.pack.js' %}" ></script>
+<script defer src="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.js' %}" ></script>
+<script defer src="{% static 'vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+  <!-- Template Main JS File -->
+<script defer src="{% static 'js/custom.js' %}"></script>
+<script defer>hljs.initHighlightingOnLoad();</script>
+
+<script defer>
+  $(document).ready(function(){
+    // $('.comment').on('click', function(e){
+    //   e.preventDefault();
+    //   const xyz = $(this).val();
+    //   $.ajax({
+    //     async: true,
+    //     url: xyz
+    //   }).done(function(data){
+    //     $('#comments').on('shown.bs.modal', function(){
+    //       $('#comments').html(data);
+    //       $('#myForm').attr('action', xyz);
+    //     });
+    //     $('#comments').modal('show');
+    //   })
+    // })
+    $('.comment').on('click', function(e){
+      e.preventDefault();
+    });
+
+    $('#id-comments').on('click', function(e){
+      e.preventDefault();
+      const cmt_url = $(this).val();
+      $.ajax({
+        async: true,
+        url: cmt_url
+      }).done(function(data){
+        console.log(data);
+      }).fail(function(xhr, textStatus, thrownError){
+        console.log(xhr.responseText);
+      })
+    })
+  })
+</script>
+
+<script defer>
+  (function docReady(s,u,m,o,j,v){
+    j=u.createElement(m);
+    v=u.getElementsByTagName(m)[0];
+    j.async=1;
+    j.src=o;
+    j.dataset.sumoSiteId='fd8bced0e3f601380443b24cd2f5369f777a175d99fa4e368fdd86b1cdf13047';
+    v.parentNode.insertBefore(j,v)
+  })
+  (window,document,'script','//load.sumo.com/');
+</script>
+{% endblock %}

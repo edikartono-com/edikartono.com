@@ -1,0 +1,22 @@
+{% extends 'account/base.html' %}
+{% load account socialaccount %}
+
+{% block page_title %}
+{% block h3_title %}
+{% block button_card %}
+Buat Akun
+{% endblock %}
+{% endblock %}
+{% endblock %}
+{% block go_to %}
+<div class="small"><a href="{{ login_url }}">Punya akun? silahkan login</a></div>
+<div class="small">
+    {% get_providers as socialaccount_providers %}
+    {% if socialaccount_providers %}
+    <p>Kamu juga bisa login dengan akun berikut:</p>
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    Atau
+    {% include "socialaccount/snippets/login_extra.html" %}
+    {% endif %}
+</div>
+{% endblock %}

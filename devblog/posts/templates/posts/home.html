@@ -1,0 +1,158 @@
+{% extends 'core/base_site.html' %}
+{% load static %}
+
+{% block page_main %}
+<!-- ======= About Section ======= -->
+<section id="about" class="about-mf sect-pt4 route">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="box-shadow-full">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="row">
+                <div class="col-sm-6 col-md-5">
+                  <div class="about-img" data-safe-defer-class="about-img">
+                    <img data-src="{{ poster.image.url }}" data-sizes="auto" class="lazyload img-fluid rounded b-shadow-a" alt="{{ poster.title }}" width="188px" height="191px">
+                  </div>
+                </div>
+                <div class="col-sm-6 col-md-7">
+                  <div class="about-info">
+                    {{ poster.info|safe }}
+                  </div>
+                </div>
+              </div>
+              <div class="skill-mf">
+                <p class="title-s">{{ poster.other }}</p>
+                {% for prog in poster.progress_set.all %}
+                <span>{{ prog.name }}</span> <span class="pull-right">{{ prog.value }}%</span>
+                <div class="progress">
+                  <div aria-valuemax="100" aria-valuemin="0" aria-valuenow="{{ prog.value }}" class="progress-bar" role="progressbar" style="width: {{ prog.value }}%;">&nbsp;</div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="about-me pt-4 pt-md-0">
+                <div class="title-box-2">
+                  <h5 class="title-left">
+                    About me
+                  </h5>
+                </div>
+                {{ poster.body|safe }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section><!-- End About Section -->
+
+<!-- ======= Services Section ======= -->
+<section id="service" class="services-mf pt-5 route">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="title-box text-center">
+          <h3 class="title-a">
+            Services
+          </h3>
+          <p class="subtitle-a">
+            Jasa dan Layanan Produk yang ada disini.
+          </p>
+          <div class="line-mf"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+        {% for ser in featured %}
+        <div class="col-md-4">
+            <div class="service-box">
+                <div class="service-ico">
+                    <span class="ico-circle"><span class="{{ ser.icon_name }}"></span></span>
+                </div>
+                <div class="service-content">
+                    <h2 class="s-title">{{ ser.title }}</h2>
+                    <p class="s-description text-center">
+                    {{ ser.body|safe }}
+                    </p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+</section><!-- End Services Section -->
+
+<!-- ======= Counter Section ======= -->
+<div class="section-counter paralax-mf bg-image lazyload" data-safe-defer-class="lazyload" style="background-image: url(static/img/counters-bg.jpg)">
+  <div class="overlay-mf"></div>
+  <div class="container">
+    <div class="row">
+      {% for cntr in counter %}
+      <div class="col-sm-3 col-lg-3">
+        <div class="counter-box counter-box pt-4 pt-md-0">
+          <div class="counter-ico">
+            <span class="ico-circle"><i class="{{ cntr.icon }}"></i></span>
+          </div>
+          <div class="counter-num">
+            <p class="counter">{{ cntr.countd }}</p>
+            <span class="counter-text">{{ cntr.name }}</span>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</div><!-- End Counter Section -->
+
+<!-- ======= Blog Section ======= -->
+<section id="blog" class="blog-mf sect-pt4 route">
+  <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="title-box text-center">
+                    <h3 class="title-a">
+                        BLOG TERBARU
+                    </h3>
+                    <p class="subtitle-a">
+                        Update tulisan terbaru dari edikartono.com
+                    </p>
+                    <div class="line-mf"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for lp in lates_post %}
+            <div class="col-md-4">
+                <div class="card card-blog">
+                    <div class="card-img" data-safe-defer-class="card-img">                      
+                        <img data-src="{{ lp.img_thumb.url }}" width="499px" height="262px" data-sizes="auto" alt="{{ lp.title }}" class="img-thumbnail lazyload" data-safe-defer-class="lazyload"/>
+                        <div class="card-body">
+                            <div class="card-category-box">
+                                <div class="card-category">
+                                    <h6 class="category">{{ lp.term }}</h6>
+                                </div>
+                            </div>
+                            <h3 class="card-title"><a href="{{ lp.get_absolute_url }}">{{ lp.title|title }}</a></h3>
+                            <p class="card-description">{{ lp.summary }}</p>
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="post-author">
+                              <span class="author"></span>
+                            </div>
+                            <div class="post-date">
+                                <span class="ion-ios-clock-outline"></span> {{ lp.create }}
+                            </div>
+                        </div>
+                    </div>
+                </div>      
+            </div>
+            {% endfor %}
+        </div>        
+    </div>
+</section><!-- End Blog Section -->
+{% endblock %}

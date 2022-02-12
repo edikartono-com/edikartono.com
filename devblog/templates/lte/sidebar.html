@@ -1,0 +1,173 @@
+{% load i18n static jazzmin admin_urls %}
+{% get_jazzmin_settings request as jazzmin_settings %}
+{% get_side_menu as side_menu_list %}
+
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar elevation-4 {{ jazzmin_ui.sidebar_classes }}" id="jazzy-sidebar">
+  <a href="#" class="brand-link {{ jazzmin_ui.brand_classes }}" id="jazzy-logo">
+    <img src="{% static jazzmin_settings.site_logo %}" alt="{{ jazzmin_settings.site_header }} Logo" class="brand-image elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">{{ jazzmin_settings.site_header }}</span>
+  </a>
+  
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        {% if jazzmin_settings.user_avatar %}
+        <img src="{% get_user_avatar request.user %}" width="160px" class="img-circle elevation-2" alt="User Image">
+        {% else %}
+        <i class="fas fa-inverse user-profile fa-user-circle"></i>
+        {% endif %}
+      </div>
+      
+      <div class="info">
+        {% if perms|can_view_self %}
+        <a href="{% jazzy_admin_url request.user request.current_app|default:'admin' %}" class="d-block">{{ request.user }}</a>
+        {% else %}
+        <span class="d-block" style="color: white;">{{ request.user }}</span>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Sidebar Menu -->
+    <nav class="mt-2">
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+        <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+        <li class="nav-item">
+          {% if request.user.is_staff %}
+          <a href="{% url 'core:dashboard' %}" class="nav-link">
+          {% else %}
+          <a href="{% url 'akun:dashboard' %}" class="nav-link">
+          {% endif %}
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>{% trans 'Dashboard' %}</p>
+          </a>
+        </li>
+        {% if request.user.is_staff %}
+        <li class="nav-header">Manage Content</li>
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="fas fa-home nav-icon"></i>
+            <p>Blog Content <i class="fas fa-angle-left right"></i></p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+                <a href="{% url 'admin:posts_terms_changelist' %}" class="nav-link">
+                  <i class="fas fa-cat nav-icon"></i>
+                  <p>Category</p>
+                </a>
+                <a href="{% url 'admin:posts_posts_changelist' %}" class="nav-link">
+                  <i class="fas fa-blog nav-icon"></i>
+                    <p>Post</p>
+                </a>
+            </li>
+        </ul>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="far fa-folder nav-icon"></i>
+                <p>Content Section <i class="fas fa-angle-left right"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{% url 'admin:corecode_countersec_changelist' %}" class="nav-link">
+                      <i class="fas fa-angle-double-right nav-icon"></i>
+                      <p>Counter Section</p>
+                    </a>
+                    <a href="{% url 'admin:corecode_featured_changelist' %}" class="nav-link">
+                      <i class="fas fa-angle-double-right nav-icon"></i>
+                      <p>Featured Section</p>
+                    </a>
+                    <a href="{% url 'admin:corecode_intro_changelist' %}" class="nav-link">
+                      <i class="fas fa-angle-double-right nav-icon"></i>
+                      <p>Intro Section</p>
+                    </a>
+                    <a href="{% url 'admin:corecode_poster_changelist' %}" class="nav-link">
+                      <i class="fas fa-angle-double-right nav-icon"></i>
+                      <p>Poster Section</p>
+                    </a>
+                    <a href="{% url 'admin:corecode_progress_changelist' %}" class="nav-link">
+                      <i class="fas fa-angle-double-right nav-icon"></i>
+                      <p>Progress Section</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'admin:corecode_contact_changelist' %}" class="nav-link">
+            <i class="far fa-address-book nav-icon"></i>
+            <p>Contact</p>
+          </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'admin:posts_page_changelist' %}" class="nav-link">
+              <i class="fas fa-asterisk nav-icon"></i>
+                <p>Page Content</p>
+            </a>
+        </li>
+
+        <li class="nav-header">Manage Product</li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-shopping-cart nav-icon"></i>
+              <p>Order</p>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fab fa-product-hunt nav-icon"></i>
+                <p>Product <i class="fas fa-angle-left right"></i></p>
+            </a>
+            <ul class="nav nav-treeview">
+                <li class="nav-item">
+                    <a href="{% url 'admin:products_product_changelist' %}" class="nav-link">
+                      <i class="fas fa-angle-double-right nav-icon"></i>
+                      <p>Product</p>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        <li class="nav-header">Corecode</li>
+        <li class="nav-item">
+          <a href="{% url 'admin:corecode_poster_changelist' %}" class="nav-link">
+            <i class="far fa-dot-circle nav-icon"></i>
+            <p>Poster</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'admin:corecode_featured_changelist' %}" class="nav-link">
+            <i class="far fa-circle nav-icon"></i>
+            <p>Featured</p>
+          </a>
+        </li>
+
+        <li class="nav-header">Manage User</li>
+        <li class="nav-item">
+          <a href="{% url 'admin:auth_user_changelist' %}" class="nav-link">
+            <i class="far fa-user nav-icon"></i>
+            <p>{% trans 'Users' %}</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'admin:auth_group_changelist' %}" class="nav-link">
+            <i class="fas fa-users nav-icon"></i>
+            <p>Group</p>
+          </a>
+        </li>
+
+        {% elif request.user.is_authenticated %}
+        <li class="nav-item">
+          <a href="#" class="nav-link">
+            <i class="far fa-comment-dots nav-icon"></i>
+            <p>Komentar</p>
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    <!-- /.sidebar-menu -->
+  </div>
+  <!-- /.sidebar -->
+</aside>
