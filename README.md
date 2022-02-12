@@ -12,11 +12,12 @@ Akhirnya saya memutuskan untuk membagikan <em>source code</em> blog saya, namun 
 4. multi user dengan group
 
 dalam proses development
-email marketing (subscribe dan newsletter)
+1. email marketing (subscribe dan newsletter)
+2. Product dan shopping cart
 
 # Lisensi 
 
-Meski devblog yang saya hasilkan ini masih jelek, namun tetap dirasa perlu menyematkan lisensi dalam penggunaannya. Bukanlah sebuah lisensi yang aneh-aneh, project ini saya beri lisensi <strong>GNU General Public License v3.0</strong>, agar siapa saja bisa memanfaatkan project ini untuk kepentingannya masing-masing.Silahkan kalian pelajari tentang lisensi GNU V3.0.
+Meski devblog yang saya hasilkan ini masih jelek, namun tetap dirasa perlu menyematkan lisensi dalam penggunaannya. Bukanlah sebuah lisensi yang aneh-aneh, project ini saya beri lisensi <strong>GNU General Public License v3.0</strong>, agar siapa saja bisa memanfaatkan project ini untuk kepentingannya masing-masing.Silahkan kalian pelajari tentang lisensi GNU V3.0. https://github.com/edikartono-com/dev-blog/blob/main/LICENSE
 
 Namun karena project ini tidak murni 100% karya saya, maka bisa saja terdapat perbedaan lisensi diantaranya: 
 
