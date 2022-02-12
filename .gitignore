@@ -6,6 +6,6 @@ env/
 devblog/*/__pycache__/
 !devblog/akun/migrations/*_initial.py
 !devblog/*/migrations/0001_initial.py
-#devblog/*/migrations/
+devblog/*/migrations/
 **/__pycache__/
 devblog/media/
