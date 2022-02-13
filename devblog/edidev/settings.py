@@ -78,6 +78,7 @@ MIDDLEWARE = [
     'django_seo_js.middleware.EscapedFragmentMiddleware',  # If you're using #!
     'django_seo_js.middleware.UserAgentMiddleware',  # If you want to detect by user agent
     'corecode.middleware.IntroMiddleware',
+    'corecode.middleware.GetSiteID',
 ]
 
 ROOT_URLCONF = 'edidev.urls'

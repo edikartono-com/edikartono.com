@@ -1,4 +1,3 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
@@ -6,9 +5,10 @@ from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import CreateView, FormView
 
 from akun import forms as frm, models as mak
+from corecode.utils import LoginMixin
 
-class MyAkunView(LoginRequiredMixin, TemplateView):
-    template_name = 'core/dashboard.html'
+class MyAkunView(LoginMixin, TemplateView):
+    template_name = 'akun/my_profile.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super(MyAkunView, self).get_context_data(*args, **kwargs)

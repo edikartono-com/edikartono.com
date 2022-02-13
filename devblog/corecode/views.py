@@ -1,11 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, TemplateView, View
 from django.views.generic.edit import CreateView
 
 from corecode import models as cmd, sweetify
-from corecode.utils import CreateChart
+from corecode.utils import CreateChart, IsStaffPermissionMixin, LoginMixin
 from posts.models import Terms, Posts
 
 create_chart = CreateChart()
@@ -18,7 +18,7 @@ def cek_user(request):
     else:
         return redirect(reverse_lazy('account_login'))
 
-class DashboardStaff(LoginRequiredMixin, PermissionRequiredMixin, TemplateView):
+class DashboardStaff(LoginMixin, IsStaffPermissionMixin, TemplateView):
     permission_required = 'is_staff'
     template_name = 'core/dashboard.html'
 

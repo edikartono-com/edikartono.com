@@ -4,20 +4,20 @@
 
 {% if post_meta %}
 {% for meta in post_meta %}
-<title>{{ meta.title }} | {{ meta.term }} | Edi Kartono</title>
+<title>{{ meta.title }} | {{ meta.term }} | {{ current_site.intro.name }}</title>
 <meta name="description" content="{{ meta.summary }}"/>
 <meta name="created" content="{{ meta.create|date:'Y-m-d H:i:s' }}"/>
 <meta name="author" content="{{ meta.author }}"/>
-<meta property="og:title" content="{{ meta.title }} | {{ meta.term }} | Edi Kartono"/>
+<meta property="og:title" content="{{ meta.title }} | {{ meta.term }} | {{ current_site.intro.name }}"/>
 <meta property="og:type" content="article"/>
 <meta property="og:description" content="{{ meta.summary }}"/>
 <meta property="og:locale" content="{{ LANGUAGE_CODE }}"/>
-<meta property="og:image" content="https://edikartono.com{{ meta.image }}"/>
+<meta property="og:image" content="https://{{ current_site.site.domain }}/{{ meta.image }}"/>
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@edikartono" />
-<meta name="twitter:title" content="{{ meta.title }} | {{ meta.term }} | Edi Kartono" />
+<meta name="twitter:title" content="{{ meta.title }} | {{ meta.term }} | {{ current_site.intro.name }}" />
 <meta name="twitter:description" content="{{ meta.summary }}" />
-<meta name="twitter:image" content="https://edikartono.com{{ meta.image }}" />
+<meta name="twitter:image" content="https://{{ current_site.site.domain }}/{{ meta.image }}" />
 {% endfor %}
 {% endif %}
 

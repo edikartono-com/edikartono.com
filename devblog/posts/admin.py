@@ -18,7 +18,7 @@ class PostsAdmin(admin.ModelAdmin):
     search_fields = ['title','term__name','author__username']
 
     def save_model(self, request, obj, form, change):
-        """ assign author pada user yang sedang login """
+        """ assign author oleh user yang sedang login """
         if obj.author == None:
             obj.author = request.user
         super().save_model(request, obj, form, change)

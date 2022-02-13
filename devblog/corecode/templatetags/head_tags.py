@@ -10,7 +10,8 @@ def post_tags(post_id):
     meta_data = Posts.objects.filter(id=post_id)
     return {'post_meta': meta_data}
 
-@register.inclusion_tag(file_html)
-def post_detail_tag(post_id):
+@register.inclusion_tag(file_html, takes_context=True)
+def post_detail_tag(context, post_id):
+    request = context['request']
     meta_data = Posts.objects.filter(id=post_id)
-    return { 'post_meta': meta_data }
+    return { 'post_meta': meta_data, 'current_site': request }

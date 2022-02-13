@@ -2,6 +2,7 @@ import os
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
 from corecode.models import Intro, Poster
+from imagekit.exceptions import MissingSource
 
 def _rfields(instance, fields):
     for field in [fields]:
@@ -22,7 +23,7 @@ def _if_has_cached(instance, cache_img):
         try:
             file = field_attr.file
             os.remove(str(file))
-        except FileNotFoundError:
+        except MissingSource:
             pass
         else:
             cache_backend = field_attr.cachefile_backend

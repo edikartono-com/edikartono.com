@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <title>{% block page_title %}{% endblock %} {{ request.intro.name }}</title>
     <link rel="stylesheet" href="{% static 'css/account.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.min.css" integrity="sha512-H0axURIL0aVKXvSdDPjG8ulhLGy/eVuL7BlKldIC6tmLGTNWRyDGeLmt9Zw3a5PTjNkxqx5ssqUSD9AiFbFhSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js" crossorigin="anonymous"></script>
     <style>
       input[type="checkbox"] {
@@ -41,13 +42,6 @@
                     <h3 class="text-center font-weight-light my-4">
                       {% block h3_title %}Title H3{% endblock %}
                     </h3>
-                    {% if messages %}
-                    <div class="alert alert-warning">
-                      {% for message in messages %}        
-                      <p>{{ message }}</p>
-                      {% endfor %}
-                    </div>
-                    {% endif %}
                   </div>
                   <div class="card-body">
                     {% block card_body %}
@@ -107,6 +101,35 @@
         </footer>
       </div>
     </div>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.all.min.js" integrity="sha512-HL3ljb5fSrMMfAiRxSP+EdI/KC1kl6gVIzCV7GaJ4yFWCpnrcGxPAmytnKk9KNigFhyICxOlgD+uuaS07t7RdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    {% if messages %}
+    {% for message in messages %}
+    <script>
+      $(document).ready(function(){
+        $(function(){
+          const elemnt = document.createElement('div');
+          elemnt.setAttribute('class', 'alert {{ message.tags }} alert-dismissible')
+          elemnt.innerHTML = '{{ message|safe|capfirst }}';
+          Swal.fire({
+            icon: '{{ message.tags|cut:"alert-" }}',
+            toast: true,
+            title: '{{ message.tags|cut:"alert-" }}',
+            html: elemnt,
+            timer: 5000,
+            timerProgressBar: true,
+            buttonsStyling: false,
+            allowOutsideClick: false,
+            customClass: {
+              confirmButton: 'btn btn-{{ message.tags|cut:"alert-" }}',
+              popup: 'alert {{ message.tags }}'
+            }
+          })
+        })
+      })
+    </script>
+    {% endfor %}
+    {% endif %}
   </body>
 </html>

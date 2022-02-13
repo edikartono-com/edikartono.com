@@ -31,9 +31,9 @@ urlpatterns = [
     path('65109ca2-8f57-4817-9b5b-2401481ff9cf/', include('akun.urls')),
     path('461273ea-732b-4037-aaac-dc86704fdd20/', include('allauth.urls')),
     path('46f8c318-6d7f-11ec-9b84-d03745578f09/', include('corecode.urls')),
-    path('71ee9697-b34b-44d2-8f6e-8677a75bed43-yandex.xml', YandexTurbo(), name='yandex_turbo'),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
+    path('yandex.xml', YandexTurbo(), name='yandex_turbo'),
     path('', include('posts.urls'))
 ]
 

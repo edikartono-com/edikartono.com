@@ -31,3 +31,15 @@ class IntroMiddleware(object):
             request.intro = intros
         response = self.get_response(request)
         return response
+
+class GetSiteID(object):
+    def __init__(self, get_response):
+        self.get_response = get_response
+    
+    @sync_and_async_middleware
+    def __call__(self, request):
+        from django.contrib.sites.shortcuts import get_current_site
+        from django.utils.functional import SimpleLazyObject
+        request.site = SimpleLazyObject(lambda: get_current_site(request))
+        response = self.get_response(request)
+        return response

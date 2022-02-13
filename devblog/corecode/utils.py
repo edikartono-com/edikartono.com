@@ -1,4 +1,5 @@
-from django.core.exceptions import ValidationError
+from django.contrib.auth.mixins import AccessMixin
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.utils.translation import gettext as _
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
 
@@ -132,6 +133,51 @@ class ImageValidator:
             return img_get
         else:
             raise ValidationError("Silahkan pilih gambar terlebih dahulu")
+
+class IsStaffPermissionMixin(AccessMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_staff:
+            return self.handle_no_permission()
+        return super(IsStaffPermissionMixin, self).dispatch(request, *args, **kwargs)
+    
+    def get_login_url(self) -> str:
+        from django.conf import settings
+        login_url = settings.LOGIN_REDIRECT_URL
+        if not login_url:
+            raise ImproperlyConfigured(
+                '{0} is missing the login_url attribute. Define {0}.login_url, settings.LOGIN_URL, or override '
+                '{0}.get_login_url().'.format(self.__class__.__name__)
+            )
+        return str(login_url)
+    
+    def handle_no_permission(self):
+        from urllib.parse import urlparse
+        from django.contrib import messages
+        from django.contrib.auth.views import redirect_to_login
+        from django.shortcuts import resolve_url
+
+        path = self.request.build_absolute_uri()
+        resolved_login_url = resolve_url(self.get_login_url())
+        messages.error(self.request, "Anda tidak diizinkan akses halaman ini, silahkan login")
+        login_scheme, login_netloc = urlparse(resolved_login_url)[:2]
+        current_scheme, current_netloc = urlparse(path)[:2]
+        print("redirect field {}".format(self.get_redirect_field_name()))
+        if (
+            (not login_scheme or login_scheme == current_scheme) and
+            (not login_netloc or login_netloc == current_netloc)
+        ):
+            path = self.request.get_full_path()
+        return redirect_to_login(
+            path,
+            resolved_login_url,
+            self.get_redirect_field_name(),
+        )
+
+class LoginMixin(IsStaffPermissionMixin):
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return self.handle_no_permission()
+        return super(IsStaffPermissionMixin, self).dispatch(request, *args, **kwargs)
 
 class SearchRelated:
     def __init__(self, model=None, filter=None):
