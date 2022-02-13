@@ -115,7 +115,7 @@ DATABASES = {
 }
 
 # Kalau menggunakan mysql/mariadb. Uncomment dan comment DATABASES di atas dan
-# install juga modul mysqclient==2.0.1
+# install juga modul mysqlclient==2.0.1
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
@@ -203,6 +203,7 @@ SOCIALACCOUNT_AUTO_SIGNUP = True
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 
 SOCIALACCOUNT_PROVIDERS = {
+    # config social akun untuk login lihat di: https://django-allauth.readthedocs.io/en/latest/providers.html#
     'google': {
         # For each OAuth based provider, either add a ``SocialApp``
         # (``socialaccount`` app) containing the required client

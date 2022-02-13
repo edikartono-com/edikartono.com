@@ -4,16 +4,25 @@
 
 Akhirnya saya memutuskan untuk membagikan <em>source code</em> blog saya, namun teman-teman jangan berharap banyak dari project ini. Sebab ini hanyalah project kecil, berupa web blog biasa saja, yang membedakan hanyalah bahasa dan framework yang digunakan. Sungguh tidak ada yang istimewa di dalamnya.</p>
 
+Front end template:
+=======================================================
+* Template Name: DevFolio - v2.3.0
+* Template URL: https://bootstrapmade.com/devfolio-bootstrap-portfolio-html-template/
+* Author: BootstrapMade.com
+* License: https://bootstrapmade.com/license/
+========================================================
+
+Admin templte: django-jazzmin (LTE)
+
 # fitur
 
 1. Blog
 2. sitemap.xml dan yandex.xml
 3. dioptimasi untuk SEO
 4. multi user dengan group
-
-dalam proses development
-1. email marketing (subscribe dan newsletter)
-2. Product dan shopping cart
+5. sidebar (static) pencarian artikel, kategori, artikel terbaru, random related artikel
+6. admin (django-jazzmin) https://github.com/farridav/django-jazzmin
+7. user social login (django-allauth) caranya : https://django-allauth.readthedocs.io/en/latest/providers.html
 
 # Lisensi 
 
@@ -30,11 +39,16 @@ siapkan sebuah virtual environment, clone https://github.com/edikartono-com/dev-
 
 isntall module python yang dibutuhkan   
 
-pip install -r requirements.txt
+<pre><code>pip install -r requirements.txt
 
-setelah selesai jalankan perintah python manage.py migrate
+python manage.py migrate
 
-kemudian terakhir jalankan python manage.py runserver
+python manage.py runserver</code></pre>
 
 # masih ada error
 Beberapa masih belum sempurna, seperti yandex.xml yang belum bisa diakses.
+
+# to do
+1. email marketing (subscribe dan newsletter)
+2. dashboard user
+3. Product dan shopping cart
