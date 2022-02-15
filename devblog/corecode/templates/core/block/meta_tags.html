@@ -12,12 +12,12 @@
 <meta property="og:type" content="article"/>
 <meta property="og:description" content="{{ meta.summary }}"/>
 <meta property="og:locale" content="{{ LANGUAGE_CODE }}"/>
-<meta property="og:image" content="https://{{ current_site.site.domain }}/{{ meta.image }}"/>
+<meta property="og:image" content="https://{{ current_site.site.domain }}{{ meta.image.url }}"/>
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:site" content="@edikartono" />
 <meta name="twitter:title" content="{{ meta.title }} | {{ meta.term }} | {{ current_site.intro.name }}" />
 <meta name="twitter:description" content="{{ meta.summary }}" />
-<meta name="twitter:image" content="https://{{ current_site.site.domain }}/{{ meta.image }}" />
+<meta name="twitter:image" content="https://{{ current_site.site.domain }}{{ meta.image.url }}" />
 {% endfor %}
 {% endif %}
 
