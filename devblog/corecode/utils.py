@@ -228,14 +228,12 @@ class SearchRelated:
         if my_query:
             count = my_query.count()
             if count >= num:
-                my_query = my_query[:num]
-                rand_samp = sample(list(my_query), num)
+                qs_rand = sample(list(my_query), num)
             elif count == 0:
-                rand_samp = list(my_query)
+                qs_rand = list(my_query)
             else:
-                my_query = my_query[:count]
-                rand_samp = sample(list(my_query), count)
-            return rand_samp
+                qs_rand = sample(list(my_query), count)
+            return qs_rand
     
     def lates_post(self, num):
         """ 
