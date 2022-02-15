@@ -11,12 +11,12 @@
     {% block add_meta %}
     <title>{{ request.intro.name }} | {{ request.intro.subtitle }}</title>
     <meta name="description" content="{{ request.intro.desc }}"/>
-    <link rel="canonical" href="{{ request.get_host }}">
+    <link rel="canonical" href="https://{{ request.site.domain }}">
     <meta property="og:title" content="{{ request.intro.name }} {{ request.intro.subtitle }}"/>
     <meta property="og:type" content="website"/>
     <meta property="og:description" content="{{ request.intro.desc }}"/>
     <meta property="og:locale" content="{{ LANGUAGE_CODE }}"/>
-    <meta property="og:image" content="{{ request.get_host }}{{ request.intro.bg_image.url }}"/>
+    <meta property="og:image" content="https://{{ request.site.domain }}{{ request.intro.bg_image.url }}"/>
     {% endblock %}
     <!-- Favicons -->
     <link href="{% static 'img/favicon.ico' %}" rel="icon" type="image/x-icon">

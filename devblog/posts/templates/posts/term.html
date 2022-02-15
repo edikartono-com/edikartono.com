@@ -2,7 +2,7 @@
 {% load static breadcrumbs %}
 
 {% block add_meta %}
-<title>{{ list_title }} | Edi Kartono</title>
+<title>{{ list_title }} | {{ request.intro.name }}</title>
 {% if desc_term %}
 <meta content="{{ desc_term.term_desc }}" name="description" />
 {% endif %}

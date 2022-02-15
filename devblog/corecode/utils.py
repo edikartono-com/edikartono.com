@@ -161,12 +161,13 @@ class IsStaffPermissionMixin(AccessMixin):
         messages.error(self.request, "Anda tidak diizinkan akses halaman ini, silahkan login")
         login_scheme, login_netloc = urlparse(resolved_login_url)[:2]
         current_scheme, current_netloc = urlparse(path)[:2]
-        print("redirect field {}".format(self.get_redirect_field_name()))
+        
         if (
             (not login_scheme or login_scheme == current_scheme) and
             (not login_netloc or login_netloc == current_netloc)
         ):
             path = self.request.get_full_path()
+            
         return redirect_to_login(
             path,
             resolved_login_url,

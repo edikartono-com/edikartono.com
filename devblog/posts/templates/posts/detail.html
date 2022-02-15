@@ -2,7 +2,7 @@
 {% load static head_tags breadcrumbs widget_tweaks %}
 
 {% block add_meta %}
-{% post_detail_tag blog.id %}
+{% post_detail_tag 'posts' 'Posts' blog.id %}
 <link rel="canonical" href="{{ request.build_absolute_uri }}">
 <meta property="og:url" content="{{ request.build_absolute_uri }}">
 {% endblock %}

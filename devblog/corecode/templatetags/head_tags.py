@@ -1,17 +1,19 @@
 from django import template
-from posts.models import Posts
-from products.models import Product
+from django.apps import apps
 
 register = template.Library()
 file_html = 'core/block/meta_tags.html'
 
-@register.inclusion_tag(file_html)
-def post_tags(post_id):
-    meta_data = Posts.objects.filter(id=post_id)
-    return {'post_meta': meta_data}
+def apps_get_model(app_label: str, model_name: str) -> type:
+    model = apps.get_model(app_label, model_name)
+    return model
 
 @register.inclusion_tag(file_html, takes_context=True)
-def post_detail_tag(context, post_id):
+def post_detail_tag(context, app_label, model_name, post_id):
+    mymodel = apps_get_model(app_label, model_name)
     request = context['request']
-    meta_data = Posts.objects.filter(id=post_id)
-    return { 'post_meta': meta_data, 'current_site': request }
+    try:
+        meta_data = mymodel.objects.get(id=post_id)
+        return { 'post_meta': meta_data, 'current_site': request }
+    except mymodel.DoesNotExist:
+        pass
