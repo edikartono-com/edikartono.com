@@ -1,0 +1,91 @@
+{% load isoformat %}
+<div class="card card-primary">
+    <div class="card-header">
+        {{ contact.email }}
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <tr>
+                    <td>ID & List IDs</td>
+                    <td>:</td>
+                    <td>{{ contact.id }} & {{ contact.list_ids }}</td>
+                </tr>
+                <tr>
+                    <td>Name</td>
+                    <td>:</td>
+                    <td>{{ contact.attributes.FIRSTNAME|title }}</td>
+                </tr>
+                <tr>
+                    <td>Subscribe</td>
+                    <td>:</td>
+                    <td>{{ contact.created_at|date:"l d/M/Y, H:i e" }}</td>
+                </tr>
+                <tr>
+                    <td>List Unsubscribe</td>
+                    <td>:</td>
+                    <td>{{ contact.list_unsubscribed }}</td>
+                </tr>
+                <tr>
+                    <td>Modified at</td>
+                    <td>:</td>
+                    <td>{{ contact.modified_at|date:"l d/M/Y H:i e" }}</td>
+                </tr>
+                <tr>
+                    <td>OPT IN</td>
+                    <td>:</td>
+                    <td>{{ contact.attributes.OPT_IN }}</td>
+                </tr>
+                <tr>
+                    <td>Email Blacklisted</td>
+                    <td>:</td>
+                    <td>{{ contact.email_blacklisted }}</td>
+                </tr>
+                <tr>
+                    <td>SMS Blacklisted</td>
+                    <td>:</td>
+                    <td>{{ contact.sms_blacklisted }}</td>
+                </tr>
+                <tr>
+                    <td colspan="3" class="text-left"><strong>Statistics :</strong></td>
+                </tr>
+                <tr>
+                    <td>Clicked</td>
+                    <td>:</td>
+                    <td>{{ contact.statistics.clicked }}</td>
+                </tr>
+                <tr>
+                    <td>Complaints</td>
+                    <td>:</td>
+                    <td>{{ contact.statistics.complaints }}</td>
+                </tr>
+                <tr>
+                    <td>Hard Bounces</td>
+                    <td>:</td>
+                    <td>{{ contact.statistics.hard_bounces }}</td>
+                </tr>
+                <tr>
+                    <td>Messages Sent</td>
+                    <td>:</td>
+                    <td>{{ contact.statistics.messages_sent }}</td>
+                </tr>
+                <tr>
+                    <td>Opened</td>
+                    <td>:</td>
+                    <td>{{ contact.statistics.opened }}</td>
+                </tr>
+                <tr>
+                    <td>Soft Bounces</td>
+                    <td>:</td>
+                    <td>{{ contact.statistics.soft_bounces }}</td>
+                </tr>
+                <tr>
+                    <td>Unsubscribe</td>
+                    <td>:</td>
+                    <td>{{ contact.statistics.unsubscriptions }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

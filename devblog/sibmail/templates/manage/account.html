@@ -1,0 +1,102 @@
+{% extends 'lte/base.html' %}
+{% load static %}
+
+{% block content_title %}{% block title %}Account SIB{% endblock %}{% endblock %}
+
+{% block content %}
+<div class="row">
+</div>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                SIB Account
+            </div>
+            <div class="card-body">
+              {% if account.error %}
+              <p class="alert alert-danger">Error : Authentikasi tidak sah!</p>
+              <p class="alert alert-info">
+                API KEY belum ada atau salah, <br>
+                Periksa api-key atau dapatkan api-key baru.
+                <strong>{{ account.error }}</strong>
+              </p>
+              <a href="{% url 'admin:sibmail_sibaccount_changelist' %}" class="btn btn-secondary">Lihat API KEY</a>
+              {% else %}
+              <table class="table table-sm table-bordered">
+                {{ contact }}
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Company Name</th>
+                    <th>Address</th>
+                    <th>Plan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ account.first_name }} {{ account.last_name }}</td>
+                        <td>{{ account.email }}</td>
+                        <td>{{ account.company_name }}</td>
+                        <td>
+                            <p>Street: {{ account.address.street }}</p>
+                            <p>City: {{ account.address.city }}</p>
+                            <p>Country: {{ account.address.country }}</p>
+                            <p>Zip Code: {{ account.address.zip_code }}</p>
+                        </td>
+                        <td>{{ account.plan.type }}</td>
+                    </tr>
+                </tbody>
+              </table>
+
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th>Plan</th>
+                    <th>Credits</th>
+                    <th>Credits Type</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for p in account.plan %}
+                  <tr>
+                    <td>{{ p.type }}</td>
+                    <td>{{ p.credits }}</td>
+                    <td>{{ p.credits_type }}</td>
+                    <td></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+
+              <table class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th>Relay</th>
+                    <th>Port</th>
+                    <th>Username</th>
+                    <th>Enabled</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>{{ account.relay.data.relay }}</td>
+                    <td>{{ account.relay.data.port }}</td>
+                    <td>{{ account.relay.data.user_name }}</td>
+                    <td>{{ account.relay.enabled }}</td>
+                  </tr>
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+  
+            <div class="card-footer clearfix">
+
+            </div>
+  
+        </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends 'lte/base.html' %}
+{% load static %}
+
+{% block content_title %}{% block title %}Account SIB{% endblock %}{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'vendor/sweetalert2/sweetalert2.min.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="row">
+</div>
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="fas fa-chart-area me-1"></i>
+                SIB Account
+            </div>
+            <div class="card-body">
+              {% if contact.error %}
+              <p class="alert alert-danger">Error : Authentikasi tidak sah!</p>
+              <p class="alert alert-info">
+                API KEY belum ada atau salah, <br>
+                Periksa api-key atau dapatkan api-key baru.
+                <strong>{{ contact.error }}</strong>
+              </p>
+              <a href="{% url 'admin:sibmail_sibaccount_changelist' %}" class="btn btn-secondary">Lihat API KEY</a>
+              {% else %}
+              <table id="tableContact" class="table table-sm table-bordered">
+                <thead>
+                  <tr>
+                    <th>List ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Created At</th>
+                    <th>modified At</th>
+                    <!-- <th>Email Blacklisted</th>
+                    <td>SMS Blacklisted</td> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  {% comment %}
+                    {% for co in contact %}
+                    <tr>
+                        <td>{{ co.id }}</td>
+                        <td>{{ co.listIds }}</td>
+                        <td>{{ co.attributes.FIRSTNAME }}</td>
+                        <td>{{ co.email }}</td>
+                        <td>{{ co.createdAt|iso_datetime|date:"l d/M/Y H:i e" }}</td>
+                        <td>{{ co.modifiedAt|iso_datetime|date:"l d/M/Y H:i e" }}</td>
+                        <td>{{ co.emailBlacklisted }}</td>
+                        <td>{{ co.smsBlacklisted }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endcomment %}
+                </tbody>
+              </table>
+              {% endif %}
+            </div>
+  
+            <div class="card-footer clearfix">
+
+            </div>
+  
+        </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'vendor/Datatables/datatables.min.js' %}"></script>
+<script src="{% static 'vendor/sweetalert2/sweetalert2.min.js' %}"></script>
+<script>
+    $(document).ready(function(){
+        const my_data = JSON.parse('{{ contact|safe }}');
+        
+        function to_date_str(to_dt){
+          const date_format = new Date(to_dt);
+          const date_option = {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }
+          const new_date = date_format.toLocaleDateString('id', date_option) +
+          " " +
+          date_format.toLocaleTimeString('id');
+          return new_date;
+        };
+
+        $('#tableContact').DataTable({
+          'order': [[0, 'desc']],
+          'processing': true,
+          'serverSide': false,
+          'lengthMenu': [25, 50, 100, 250],
+          data: my_data,
+          columns: [
+            {data: "listIds"},
+            {
+              data: null,
+              render: function(data, type, row, meta){
+                return row.attributes.FIRSTNAME;
+              }, defaultContent: ""
+            },
+            {
+              data: null,
+              render: function(data, type, row, meta){
+                return '<button type="button" class="btn-details" value="{% url "sibmail:my_contact_details" %}?email='+row.email+'">'+row.email+'</button>';
+              }, defaultContent: ""
+            },
+            {
+              data: null,
+              render: function(data, type, row, meta){
+                return to_date_str(row.createdAt);
+              }, defaultContent: ""
+            },
+            {
+              data: null,
+              render: function(date, type, row, meta){
+                return to_date_str(row.modifiedAt);
+              }, defaultContent: ""
+            }
+          ]
+        });
+
+        $('body').on('click', '.btn-details', function(e){
+          e.preventDefault();
+          const btn = $(this).val();
+
+          $.ajax({
+            url: btn,
+            method: "GET",
+          }).done(function(data){
+            Swal.fire({
+              title: "Detail Contact:",
+              html: data,
+              showCloseButton: true,
+            })
+          }).fail(function(xhr, textStatus, thrownError){
+            Swal.fire({
+              title: textStatus + ": " + xhr.status,
+              html: thrownError,
+              icon: "error",
+              showCloseButton: true,
+            })
+          })
+        })
+    })
+</script>
+{% endblock %}
