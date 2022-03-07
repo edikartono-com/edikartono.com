@@ -252,3 +252,11 @@ Beberapa masih belum sempurna, seperti yandex.xml yang belum bisa diakses.
 1. email marketing (subscribe dan newsletter)
 2. dashboard user
 3. Product dan shopping cart
+
+# Informasi Kontak
+Untuk fitur khusus dan commercial support, Kamu bisa menghubungi saya di:
+
+telegram & twitter: @edikartono
+email : bisnis@edikartono.com
+blog : https://edikartono.com
+YT Channel : https://www.youtube.com/c/EdiKartonoCom
