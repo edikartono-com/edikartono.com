@@ -4,7 +4,7 @@
 */__pycache__/
 !akun/migrations/*_initial.py
 !*/migrations/0001_initial.py
-*/migrations/
+*/migrations/*
 **/__pycache__/
 edidev/
-media/
+media/*
