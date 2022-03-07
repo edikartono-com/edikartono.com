@@ -237,6 +237,44 @@ JAZZMIN_SETTINGS = {
 }
 </code></pre>
 
+Ini untuk file urls.py
+
+<pre><code>
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib import admin
+from django.contrib.sitemaps.views import sitemap
+from django.urls import path, include
+
+from posts.sitemap import PageSitemap, PostSitemap, YandexTurbo
+
+# membuat sitemap
+sitemaps = {
+    'page': PageSitemap,
+    'post': PostSitemap
+}
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('akun/', include('akun.urls')),
+
+    # path ini harus sama pada settings.LOGIN_REDIRECT_URL
+    path('accounts/', include('allauth.urls')),
+
+    path('core/', include('corecode.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+
+    # sitemap
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
+    path('yandex.xml', YandexTurbo(), name='yandex_turbo'),
+
+    path('', include('posts.urls'))
+]
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+</code></pre>
+
 isntall module python yang dibutuhkan   
 
 <pre><code>pip install -r requirements.txt
