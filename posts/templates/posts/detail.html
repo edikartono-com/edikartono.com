@@ -9,6 +9,12 @@
 
 {% block add_style %}
 <link
+    rel="dns-prefetch"
+    href="http://sumo.com">
+<link
+    rel="dns-prefetch"
+    href="http://load.sumo.com">
+<link
     rel="prefetch"
     as="style" onload="this.rel='stylesheet'"
     type="font/ttf"
@@ -18,6 +24,69 @@
 <link rel="stylesheet" href="{% static 'ckeditor/ckeditor/plugins/codesnippet/lib/highlight/styles/obsidian.css' %}">
 <link rel="stylesheet" href="{% static 'ckeditor/ckeditor/plugins/prism/lib/prism/prism_patched.min.css' %}">
 <link rel="stylesheet" href="{% static 'vendor/ionicons/css/ionicons.post.css' %}">
+
+<style>
+  .btn-comment {
+    appearance: none;
+    backface-visibility: hidden;
+    background-color: #2f80ed;
+    border-radius: 10px;
+    border-style: none;
+    box-shadow: none;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter,-apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    height: 50px;
+    letter-spacing: normal;
+    line-height: 1.5;
+    outline: none;
+    overflow: hidden;
+    padding: 14px 30px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    transform: translate3d(0, 0, 0);
+    transition: all .3s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: top;
+    white-space: nowrap;
+  }
+
+  .btn-comment:hover {
+    background-color: #1366d6;
+    box-shadow: rgba(0, 0, 0, .05) 0 5px 30px, rgba(0, 0, 0, .05) 0 1px 4px;
+    opacity: 1;
+    transform: translateY(0);
+    transition-duration: .35s;
+  }
+
+  .btn-comment:hover:after {
+    opacity: .5;
+  }
+
+  .btn-comment:active {
+    box-shadow: rgba(0, 0, 0, .1) 0 3px 6px 0, rgba(0, 0, 0, .1) 0 0 10px 0, rgba(0, 0, 0, .1) 0 1px 4px -1px;
+    transform: translateY(2px);
+    transition-duration: .35s;
+  }
+
+  .btn-comment:active:after {
+    opacity: 1;
+  }
+
+  @media (min-width: 768px) {
+    .btn-comment {
+      padding: 14px 22px;
+      width: 176px;
+    }
+  }
+</style>
 {% endblock %}
 
 {% block page_intro %}
@@ -70,6 +139,14 @@
               {{ blog.body | safe }}
             </div>
           </div>
+          
+          <div class="row mb-4">
+            <div class="col-12 text-center">
+              <button type="button" value="{% url 'akun:comment_make' %}?room={{ hash }}&blog={{ blog.get_absolute_url }}" class="btn btn-primary btn-comment comment"><span class="ion-chatbubble"></span> Comment</button>
+              <button type="button" value="{% url 'akun:comment_view' hash %}" id="id-comments" class="btn btn-primary btn-comment"><span class="ion-chatbubbles"></span> Lihat komentar</button>
+            </div>
+          </div>
+
         </article>
       </div><!--/col-md-8-->
       
@@ -114,48 +191,65 @@
 
 <script defer>
   $(document).ready(function(){
-    // $('.comment').on('click', function(e){
-    //   e.preventDefault();
-    //   const xyz = $(this).val();
-    //   $.ajax({
-    //     async: true,
-    //     url: xyz
-    //   }).done(function(data){
-    //     $('#comments').on('shown.bs.modal', function(){
-    //       $('#comments').html(data);
-    //       $('#myForm').attr('action', xyz);
-    //     });
-    //     $('#comments').modal('show');
-    //   })
-    // })
     $('.comment').on('click', function(e){
       e.preventDefault();
+      const xyz = $(this).val();
+      $.ajax({
+        async: true,
+        url: xyz
+      }).done(function(data){
+        $('#myModal').on('shown.bs.modal', function(){
+          $('#myModal').html(data);
+          $('#myForm').attr('action', xyz);
+        });
+        $('#myModal').modal('show');
+      })
     });
 
-    $('#id-comments').on('click', function(e){
+    const id_comments = function idComments(e){
       e.preventDefault();
       const cmt_url = $(this).val();
       $.ajax({
         async: true,
         url: cmt_url
       }).done(function(data){
-        console.log(data);
+        let title = '<p class="comment-title"><a href="{{ blog.get_absolute_url }}">{{ blog.title }}</a></p>';
+        $('#myModal').on('shown.bs.modal', function(){
+          $('#myModal').html(data);
+          $('.comment-count').before(title)
+        });
+        $('#myModal').modal({
+          show: true,
+          backdrop: 'static'
+        });
       }).fail(function(xhr, textStatus, thrownError){
         console.log(xhr.responseText);
-      })
-    })
-  })
-</script>
+      });
+    }
 
-<script defer>
-  (function docReady(s,u,m,o,j,v){
-    j=u.createElement(m);
-    v=u.getElementsByTagName(m)[0];
-    j.async=1;
-    j.src=o;
-    j.dataset.sumoSiteId='fd8bced0e3f601380443b24cd2f5369f777a175d99fa4e368fdd86b1cdf13047';
-    v.parentNode.insertBefore(j,v)
-  })
-  (window,document,'script','//load.sumo.com/');
+    function getUrlParam(){
+      let pageUrl = window.location.href;
+      if (pageUrl.split('?')[1]){
+        let argsPar = pageUrl.split('?')[1].split('=');
+        argsPar.shift();
+        jQuery(function(){
+          jQuery('#id-comments').click();
+        });
+        
+        $('#myModal').on('shown.bs.modal', function(e){
+          setTimeout( function(){
+            const spanId = $('div#id-'+argsPar)
+            $('#myModal').animate({
+              scrollTop: spanId.offset().top
+            })
+            spanId.addClass('alert alert-warning')
+          }, 500);
+        })
+      }
+    };
+
+    getUrlParam();
+    $('#id-comments').on('click', id_comments);
+  });
 </script>
 {% endblock %}

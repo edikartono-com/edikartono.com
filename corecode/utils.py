@@ -1,7 +1,16 @@
 from django.contrib.auth.mixins import AccessMixin
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext as _
+
+from corecode.shortcuts import filter_qurey, query
 from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
+
+def paginate_me(request, queryset, num=25):
+    from django.core.paginator import Paginator
+    paginator = Paginator(queryset, num)
+    page = request.GET.get('page')
+    activities = paginator.get_page(page)
+    return activities
 
 class CreateChart:
     def __init__(self) -> None:
@@ -59,26 +68,13 @@ class CreateChart:
         last = self._last_select_related(grouping)
         return last
     
-    def get_query(self, model):
-        search = SearchRelated()
-        query = search._get_querysets(model)
-        if not hasattr(query, 'values'):
-            model__name = model.__name__ if isinstance(model, type) else model.__class__.__name__
-            raise ValueError(
-                "argumen pertama untuk memilih artikel related harus Model, Manager, atau "
-                "Queryset, bukan '%s' " % model__name
-            )
-        return query
-    
     def query_select_related(self, model, *args, **kwargs):
-        get_query = self.get_query(model)
-        obj_query = get_query.all().values(*args).annotate(**kwargs)
+        obj_query = query(model).all().values(*args).annotate(**kwargs)
         chart_data = self._convert_to_list(obj_query)
         return chart_data
     
     def query_prefetch_related(self, model, prefetch, *args, **kwargs):
-        get_query = self.get_query(model)
-        obj_query = get_query.all().values(*args).prefetch_related(prefetch).annotate(**kwargs)
+        obj_query = query(model).all().values(*args).prefetch_related(prefetch).annotate(**kwargs)
         chart_data = self._data_labels(obj_query)
         return chart_data
 
@@ -97,42 +93,6 @@ class HomePage:
         from corecode.models import CounterSec
         counter = CounterSec.objects.defer().all()
         return counter
-
-class ImageValidator:
-    def __init__(self):
-        self.suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-
-    def sizeof_file(self, img_size):
-        i = 0
-        while img_size > 1024 and i < len(self.suffixes)-1:
-            img_size /= 1024
-            i += 1
-        f = ('%.2f' % img_size).rstrip('0').rstrip('.')
-        return '%s %s' % (f, self.suffixes[i])
-
-    def image_validator(self, cleaned_data, img_field, img_size):
-        """
-        Validator image size.
-
-        Args:
-            cleaned_data: return dari input yang divalidasi dan dikembalikan sebagai object
-            img_field: nama field gambar (ImageField)
-            img_size: batas ukuran file (dalam byte) terbesar yang diijinkan untuk diupload.
-        
-        Returns:
-            Apabila ukuran gambar lebih kecil atau sama dengan img_size, gambar akan disimpan.
-            Jika gambar lebih besar dari img_size, menampilkan pesan error bahwa gambar ukurannya 
-            terlalu besar.
-        """
-        img_get = cleaned_data.get(img_field, None)
-        humanize = self.sizeof_file(img_size)
-        if img_get:
-            imgsize = float(img_get.size / 1048576)
-            if img_get.size > img_size:
-                raise ValidationError("Maks file berukuran "+ humanize +", file kamu %.2f MB" % imgsize)
-            return img_get
-        else:
-            raise ValidationError("Silahkan pilih gambar terlebih dahulu")
 
 class IsStaffPermissionMixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
@@ -184,26 +144,6 @@ class SearchRelated:
     def __init__(self, model=None, filter=None):
         self.model = model
         self.filter = filter
-    
-    def _get_querysets(self, klass):
-        if hasattr(klass, '_default_manager'):
-            return klass._default_manager.all()
-        return klass
-    
-    def filter_query(self, klass, *field, **value):
-        query = self._get_querysets(klass)
-        if not hasattr(query, 'filter'):
-            klass__name = klass.__name__ if isinstance(klass, type) else klass.__class__.__name__
-            raise ValueError(
-                "argumen pertama untuk memilih artikel related harus Model, Manager, atau "
-                "Queryset, bukan '%s' " % klass__name
-            )
-        
-        obj_list = query.filter(*field, **value)
-        # if not obj_list:
-        #     # raise Http404('No %s cocok ' % query.model._meta.object_name)
-        #     obj_list = "Tidak ada artikel terkait %s" % query.model._meta.object_name
-        return obj_list
 
     def random_related(self, num, slug, **filters):
         """ 
@@ -222,7 +162,7 @@ class SearchRelated:
         from random import sample
         
         try:
-            my_query = self.filter_query(self.model, **filters).exclude(slug=slug)
+            my_query = filter_qurey(self.model, **filters).exclude(slug=slug)
         except self.model.DoesNotExist:
             my_query = None
         if my_query:

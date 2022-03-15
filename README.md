@@ -4,19 +4,9 @@
 
 Akhirnya saya memutuskan untuk membagikan <em>source code</em> blog saya, namun teman-teman jangan berharap banyak dari project ini. Sebab ini hanyalah project kecil, berupa web blog biasa saja, yang membedakan hanyalah bahasa dan framework yang digunakan. Sungguh tidak ada yang istimewa di dalamnya.</p>
 
-Front end template:
-=======================================================
-* Template Name: DevFolio - v2.3.0
-* Template URL: https://bootstrapmade.com/devfolio-bootstrap-portfolio-html-template/
-* Author: BootstrapMade.com
-* License: https://bootstrapmade.com/license/
-========================================================
-
-Admin templte: django-jazzmin (LTE)
-
 # fitur
 
-1. Blog
+1. Blog dengan komentar
 2. sitemap.xml dan yandex.xml
 3. dioptimasi untuk SEO
 4. multi user dengan group
@@ -33,18 +23,16 @@ Namun karena project ini tidak murni 100% karya saya, maka bisa saja terdapat pe
 Template (backend dan frontend) juga module yang digunakan. Masing-masing memiliki lisensinya sendiri.
 
 # Cara Menggunakannya
-Sebenarnya tidak sulit menggunakan devblog, 
-
 siapkan sebuah virtual environment, buat project dan
 
 <code>clone https://github.com/edikartono-com/dev-blog.git</code>
 
-Buka file settings.py tambahkan
+Buka file settings.py tambahkan yang belum ada dengan berikut ini.
 <pre><code>
 import os
 
 INSTALLED_APPS = [
-    'jazzmin',
+    'jazzmin', # baru
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -54,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
 
+    # allauth module
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -116,8 +105,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # django login redirection
 # hanya diisi dengan huruf, angka, dan tanda - tanpa spasi.
-LOGIN_REDIRECT_URL = "/apa-saja-terserah/"
+LOGIN_REDIRECT_URL = "/accounts/"
 
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # django-allauth
 AUTHENTICATION_BACKENDS = [
@@ -271,11 +268,10 @@ urlpatterns = [
     path('', include('posts.urls'))
 ]
 
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 </code></pre>
 
-isntall module python yang dibutuhkan   
+isntall module python yang dibutuhkan
 
 <pre><code>pip install -r requirements.txt
 

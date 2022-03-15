@@ -1,0 +1,20 @@
+{% get_current_language as LANGUAGE_CODE %}
+<div class="input-group datepicker">
+    <div class="input-group-text" id="{{ widget.datepicker_id }}_grp">
+        <i class="far fa-calendar-alt"></i>
+        {% include "django/forms/widgets/input.html" %}
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('#{{ widget.datepicker_id }}').datepicker({
+            format: "dd/mm/yyyy",
+            language: "{{ LANGUAGE_CODE }}",
+            dayOfWeekHighlighted: "0",
+            autoclose: true,
+            todayHighlight: true,
+            toggleActive: true
+        })
+    })
+</script>

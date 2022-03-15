@@ -6,6 +6,20 @@ from imagekit.processors import ResizeToFill
 
 from uuid import uuid4
 
+class CustomManager(models.Manager):
+    def __getattr__(self, attr, *args):
+        try:
+            return getattr(self.__class__, attr, *args)
+        except AttributeError:
+            if attr.startswith('__') and attr.endswith('__'):
+                raise
+            return getattr(self.get_queryset(), attr, *args)
+    
+    def get_queryset(self):
+        return self.model.QuerySet(self.model, using=self._db)
+    # def get_queryset(self):
+    #     return super().get_queryset().filter(show=True)
+
 class Intro(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=75, help_text="Nama website")

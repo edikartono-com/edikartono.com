@@ -3,9 +3,7 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from corecode.models import Intro, Poster
-from corecode.utils import ImageValidator
-
-img_val = ImageValidator()
+from corecode import validation as img_val
 
 class FormIntro(ModelForm):
     class Meta:

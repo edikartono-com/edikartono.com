@@ -1,9 +1,7 @@
 from django.forms import ModelForm
 
-from corecode.utils import ImageValidator
+from corecode import validation as img_val
 from posts.models import Posts, Page
-
-img_val = ImageValidator()
 
 class FormPage(ModelForm):
     class Meta:

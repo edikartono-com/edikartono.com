@@ -1,3 +1,4 @@
+# https://linggar.asia/?p=616
 from django.contrib import admin
 from django.db.models.base import ModelBase
 

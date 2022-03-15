@@ -3,7 +3,6 @@
 *~
 */__pycache__/
 manage.py
-!akun/migrations/*_initial.py
 !*/migrations/0001_initial.py
 */migrations/*
 **/__pycache__/

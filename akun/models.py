@@ -1,8 +1,12 @@
 from django.contrib.auth.models import User
+from django.core.validators import MaxLengthValidator
 from django.db import models
+from django.db.models import Q, QuerySet
+from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from corecode import utils as core_utils
+from corecode.models import CustomManager
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
 from posts.models import Posts
@@ -44,16 +48,63 @@ class MyAkun(models.Model):
 class Comments(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     post = models.ForeignKey(Posts, on_delete=models.CASCADE, related_name='comment')
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='user_comment')
     nama = models.CharField(max_length=75, null=True, blank=False)
     email = models.EmailField(null=True, blank=False, help_text="Email tidak akan ditampilkan")
-    teks = models.TextField()
-    cmdate = models.DateTimeField(auto_now_add=True)
+    teks = models.TextField(verbose_name="tulis komentar kamu", validators=[MaxLengthValidator(250)])
+    cmdate = models.DateTimeField(auto_now_add=True, verbose_name="Comment date")
     active = models.BooleanField(default=False)
     reply = models.ForeignKey('self', on_delete=models.SET_NULL, related_name='replies', blank=True, null=True)
+
+    is_spam = models.BooleanField(default=False)
+
+    is_deleted = models.BooleanField(default=False, blank=True)
+    deleted_at = models.DateTimeField(null=True, blank=True)
+    deleted_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='user_delete_comment')
+
+    objects = CustomManager()
+    all_objects = models.Manager()
+
+    class QuerySet(QuerySet):
+        def get_comments(self, hash, *args, **kwargs):
+            return self.filter(active=True, post=hash, *args, **kwargs)
+        
+        def comments_approve(self, user_id):
+            return self.filter(user_id=user_id, active=True)
+        
+        def comments_unapprove(self, user_id):
+            return self.filter(Q(user_id=user_id, active=False) & (Q(is_deleted=False) | Q(is_deleted=None)))
+        
+        def comments_is_spam(self, user_id):
+            return self.filter(Q(user_id=user_id, is_spam=True) & (Q(is_deleted=False) | Q(is_deleted=None)))
+        
+        def comments_deleted(self, user_id):
+            return self.filter(user_id=user_id, is_deleted=True)
+    
+    def soft_delete(self, user_id=None):
+        self.active = False
+        self.is_deleted = True
+        self.deleted_at = timezone.now()
+        self.deleted_by = user_id
+        self.save()
+    
+    def undelete(self):
+        self.active = False
+        self.is_deleted = False
+        self.deleted_at = None
+        self.deleted_by = None
+        self.save()
+    
+    def is_spam_comment(self):
+        self.active = False
+        self.is_spam = True
+        self.save()
 
     class Meta:
         ordering = ['-cmdate']
     
     def __str__(self) -> str:
-        return 'Comment {} by {}'.format(self.post.title, self.user.username)
+        if self.user:
+            return 'Comment {} by {}'.format(self.post.title, self.user.username)
+        else:
+            return 'Comment {} by {}'.format(self.post.title, self.nama)

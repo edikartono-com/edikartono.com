@@ -1,0 +1,89 @@
+{% load widget_tweaks %}
+<style>
+    button.reply {
+        border: none !important;
+        background: none !important;
+        text-decoration: underline !important;
+        outline: none !important;
+        font-weight: bold;
+        color: #0275d8;;
+    }
+</style>
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <div><p class="comment-count comment-title mb-2">{{ count }} Comment(s)</p></div>
+            <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <div class="col-md-12">
+                {% for comment in comments %}
+                    <div class="mb-2">
+                        {% if not comment.reply %}
+                        <div class="alert alert-primary" id="id-{{ comment.id }}">
+                            <span>
+                                <span class="ion-chatbox-working"></span> {% if comment.user %}{{ comment.user }}{% else %}{{ comment.nama | striptags | escape }}{% endif %} | 
+                                <span class="ion-calendar"></span> 
+                                <span style="font-size: 0.8em;"><a href="?comment={{ comment.id }}">{{ comment.cmdate | date:'d M Y H:i:s T' }}</a></span>
+                            </span>
+                            <p>{{ comment.teks | striptags | escape }}</p>
+                            <div>
+                                <button type="button" value="{% url 'akun:comment_make' %}?room={{ hash }}&block={{ comment.id }}" class="comment reply">Jawab</button>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% for reply in comment.replies.all %}
+                        {% if reply.active %}
+                        <div class="row">
+                            <div class="col ml-5" style="border-left: 2px solid #0275d8;">
+                                <div class="alert alert-secondary" id="id-{{ reply.id }}">
+                                    <span>
+                                        <span class="ion-reply-all"></span> {% if reply.user %}{{ reply.user }}{% else %}{{ reply.nama | striptags | escape }}{% endif %} | 
+                                        <span class="ion-calendar"></span> 
+                                        <span style="font-size: 0.8em;"><a href="?comment={{ reply.id }}">{{ comment.cmdate | date:'d M Y H:i:s T' }}</a></span>
+                                    </span>
+                                    <p> {{ reply.teks | striptags | escape }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                {% empty %}
+                <div class="title-box-2">
+                    <h5>Belum ada komentar</h5>
+                    <button type="button" value="{% url 'akun:comment_make' %}?room={{ hash }}" class="btn btn-primary mb-4 comment">Comment</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">Tutup</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.comment').on('click', function(e){
+            e.preventDefault();
+            const xyz = $(this).val();
+            $.ajax({
+                async: true,
+                url: xyz
+            }).done(function(data){
+            $('#comments').modal('hide');
+                $('#comments').on('shown.bs.modal', function(){
+                    $('#comments').html(data);
+                    $('#myForm').attr('action', xyz);
+                });
+                $('#comments').modal('show');
+            })
+        });
+    });
+  </script>

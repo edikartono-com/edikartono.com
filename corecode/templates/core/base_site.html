@@ -42,14 +42,11 @@
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
 
     <style>
-      button.form-btn {
-        background: none !important;
-        border: none;
-        color: #fff;
-      }
+      body.swal2-shown > [aria-hidden="true"] {transition: 0.1s filter;filter: blur(10px);}
     </style>
     
     <script src="{% static 'js/lazysizes.min.js' %}" async="async"></script>
+    <!-- Template Name: DevBlog - v0.0.1b -->
     <!-- =======================================================
         * Template Name: DevFolio - v2.3.0
         * Template URL: https://bootstrapmade.com/devfolio-bootstrap-portfolio-html-template/
@@ -61,7 +58,7 @@
     <!-- ======= Header/ Navbar ======= -->
     <nav class="navbar navbar-b navbar-trans navbar-expand-md fixed-top" id="mainNav">
       <div class="container">
-        <a class="navbar-brand js-scroll" href="{% url 'blog:index' %}">{{ request.intro.name }}</a>
+        <a class="navbar-brand js-scroll" href="{% url 'blog:index' %}">Edi Kartono</a>
         <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarDefault" aria-controls="navbarDefault" aria-expanded="false" aria-label="Toggle navigation">
           <span></span>
           <span></span>
@@ -103,7 +100,8 @@
           </div>
         </div>
       </div>
-    </div><!-- End Intro Section -->    
+    </div><!-- End Intro Section -->
+    
   
     <main id="main">
         {% if messages %}
@@ -176,13 +174,7 @@
             <div class="copyright-box">
               <p class="copyright">&copy; Copyright <strong>{{ request.intro.name }}</strong>. All Rights Reserved</p>
               <div class="credits">
-                  <!--
-                      All the links in the footer should remain intact.
-                      You can delete the links only if you purchased the pro version.
-                      Licensing information: https://bootstrapmade.com/license/
-                      Purchase the pro version with working PHP/AJAX contact form: https://bootstrapmade.com/buy/?theme=DevFolio
-                    -->
-                Template by <a href="https://bootstrapmade.com/" target="_blank" rel="noopener noreferrer">BootstrapMade</a> | DevBlog by <a href="https://edikartono.com/" target="_blank" rel="noopener noreferrer">Edi Kartono</a>
+                Template DevBlog v0.0.1b Fork of DevFolio - v2.3.0
               </div>
             </div>
           </div>
@@ -192,6 +184,7 @@
   
     <a href="#" class="back-to-top"><span class="ion-chevron-up"></span></a>
     <div id="preloader"></div>
+    <div id="myModal" class="modal" role="dialog"></div>
   
     
     {% block add_js %}
@@ -204,11 +197,13 @@
     <script defer src="{% static 'vendor/owl.carousel/owl.carousel.min.js' %}"></script>
     <script defer src="{% static 'vendor/typed.js/typed.min.js' %}"></script>
     <script defer src="{% static 'vendor/venobox/venobox.min.js' %}"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.all.min.js" integrity="sha512-HL3ljb5fSrMMfAiRxSP+EdI/KC1kl6gVIzCV7GaJ4yFWCpnrcGxPAmytnKk9KNigFhyICxOlgD+uuaS07t7RdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Template Main JS File -->
     <script defer="defer" src="{% static 'js/main.js' %}"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.all.min.js" integrity="sha512-HL3ljb5fSrMMfAiRxSP+EdI/KC1kl6gVIzCV7GaJ4yFWCpnrcGxPAmytnKk9KNigFhyICxOlgD+uuaS07t7RdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     {% endblock %}
+    
     {% block ext_js %}{% endblock %}
+    <script defer src="{% static 'js/new.contact.js' %}"></script>
   </body>
   
 </html>

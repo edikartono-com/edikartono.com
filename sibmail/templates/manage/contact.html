@@ -39,22 +39,7 @@
                     <td>SMS Blacklisted</td> -->
                   </tr>
                 </thead>
-                <tbody>
-                  {% comment %}
-                    {% for co in contact %}
-                    <tr>
-                        <td>{{ co.id }}</td>
-                        <td>{{ co.listIds }}</td>
-                        <td>{{ co.attributes.FIRSTNAME }}</td>
-                        <td>{{ co.email }}</td>
-                        <td>{{ co.createdAt|iso_datetime|date:"l d/M/Y H:i e" }}</td>
-                        <td>{{ co.modifiedAt|iso_datetime|date:"l d/M/Y H:i e" }}</td>
-                        <td>{{ co.emailBlacklisted }}</td>
-                        <td>{{ co.smsBlacklisted }}</td>
-                    </tr>
-                    {% endfor %}
-                    {% endcomment %}
-                </tbody>
+                <tbody></tbody>
               </table>
               {% endif %}
             </div>
@@ -106,7 +91,7 @@
             {
               data: null,
               render: function(data, type, row, meta){
-                return '<button type="button" class="btn-details" value="{% url "sibmail:my_contact_details" %}?email='+row.email+'">'+row.email+'</button>';
+                return '<button type="button" class="btn-details btn btn-link" value="{% url "sibmail:my_contact_details" %}?email='+row.email+'">'+row.email+'</button>';
               }, defaultContent: ""
             },
             {

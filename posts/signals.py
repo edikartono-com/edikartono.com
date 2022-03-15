@@ -9,7 +9,7 @@ def page_delete_file_after_delete(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Page)
 def page_delete_file_after_update(sender, instance, **kwargs):
-    delete_file_after_update(Page, instance, 'image')
+    delete_file_after_update(sender, instance, 'image')
 
 @receiver(post_delete, sender=Posts)
 def post_delete_file_after_delete(sender, instance, **kwargs):
@@ -17,4 +17,4 @@ def post_delete_file_after_delete(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Posts)
 def post_delete_file_after_update(sender, instance, **kwargs):
-    delete_file_after_update(Posts, instance, 'image', 'img_thumb')
+    delete_file_after_update(sender, instance, 'image', 'img_thumb')

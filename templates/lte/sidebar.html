@@ -44,6 +44,14 @@
             <p>{% trans 'Dashboard' %}</p>
           </a>
         </li>
+
+        <li class="nav-item">
+          <a href="{% url 'akun:my_comment' %}" class="nav-link">
+            <i class="fas fa-comments nav-icon"></i>
+            <p>My Comments</p>
+          </a>
+        </li>
+
         {% if request.user.is_staff %}
         <li class="nav-header">Manage Content</li>
         <li class="nav-item">
@@ -64,6 +72,7 @@
             </li>
         </ul>
         </li>
+
         <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="far fa-folder nav-icon"></i>
@@ -93,6 +102,12 @@
                     </a>
                 </li>
             </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'admin:akun_comments_changelist' %}" class="nav-link">
+            <i class="fas fa-comments nav-icon"></i>
+            <p>All Comments</p>
+          </a>
         </li>
         <li class="nav-item">
           <a href="{% url 'admin:corecode_contact_changelist' %}" class="nav-link">
@@ -129,17 +144,29 @@
             </ul>
         </li>
 
-        <li class="nav-header">Corecode</li>
+        <li class="nav-header">SIB Mail</li>
         <li class="nav-item">
-          <a href="{% url 'admin:corecode_poster_changelist' %}" class="nav-link">
-            <i class="far fa-dot-circle nav-icon"></i>
-            <p>Poster</p>
+          <a href="{% url 'admin:sibmail_sibaccount_changelist' %}" class="nav-link">
+            <i class="fas fa-key nav-icon"></i>
+            <p>Api Key</p>
           </a>
         </li>
         <li class="nav-item">
-          <a href="{% url 'admin:corecode_featured_changelist' %}" class="nav-link">
-            <i class="far fa-circle nav-icon"></i>
-            <p>Featured</p>
+          <a href="{% url 'sibmail:sib_account' %}" class="nav-link">
+            <i class="fas fa-envelope nav-icon"></i>
+            <p>Account</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'sibmail:my_contact' %}" class="nav-link">
+            <i class="fas fa-id-card nav-icon"></i>
+            <p>Subscriber</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'sibmail:get_email_campaigns' %}" class="nav-link">
+            <i class="fas fa-mail-bulk nav-icon"></i>
+            <p>Email Campaigns</p>
           </a>
         </li>
 
@@ -154,14 +181,6 @@
           <a href="{% url 'admin:auth_group_changelist' %}" class="nav-link">
             <i class="fas fa-users nav-icon"></i>
             <p>Group</p>
-          </a>
-        </li>
-
-        {% elif request.user.is_authenticated %}
-        <li class="nav-item">
-          <a href="#" class="nav-link">
-            <i class="far fa-comment-dots nav-icon"></i>
-            <p>Komentar</p>
           </a>
         </li>
         {% endif %}

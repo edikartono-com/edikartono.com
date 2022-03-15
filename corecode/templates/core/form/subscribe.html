@@ -1,0 +1,109 @@
+{% load i18n static widget_tweaks %}
+<div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            {{ text_form }}
+            <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form method="POST" id="newContact">
+                {% for hidden in form.hidden_fields %}
+                {{ hidden }}
+                {% endfor %}
+                {% csrf_token %}
+                {{ form.media }}
+                {% if form.errors %}
+                    <div class="container">
+                        <div class="alert alert-danger alert-dismissible">
+                            {% if errors|length == 1 %}
+                                {% trans "Please correct the error below." %}
+                            {% else %}
+                                {% trans "Please correct the errors below." %}
+                            {% endif %}
+                        </div>
+                        {% for error in form.non_field_errors %}
+                            <div class="alert alert-danger alert-dismissible">
+                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
+                                <i class="icon fa fa-ban"></i>{{ error|capfirst }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                {% for field in form.visible_fields %}
+                <div class="form-group row mb-4">
+                    <div class="col">
+                        {% render_field field class="form-control" placeholder=field.label %}
+                        {% if field.help_text %}
+                        <div class="form-text text-muted"><small>{{ field.help_text }}</small></div>
+                        {% endif %}
+                        {% if field.errors %}
+                        {% for error in field.errors %}
+                        <div class="alert alert-warning"><small>{{ error | striptags }}</small></div>
+                        {% endfor %}
+                        {% endif %}
+                    </div>                    
+                </div>
+                {% endfor %}
+                <div class="form-group row mb-4">
+                    <div class="col">
+                        <button class="btn btn-primary" type="submit">Simpan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        const frm = $('#newContact');
+        
+        $('#newContact').submit(function(e){
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false
+            }).done(function(data){
+                if(data.err_code === 'invalid_form'){
+                    e.preventDefault();
+                    for(var key in data.err_msg){
+                        $(frm).find("input[id='id_"+key+"']").focus();
+                        $(frm).find("input[id='id_"+key+"']").after('<div class="alert alert-warning"><small>'+data.err_msg[key][0])+'</small></div>';
+                    }
+                } else {
+                    Swal.fire({
+                        title: "Komentar kamu berhasil disimpan",
+                        html: "Komentar akan direview oleh admin",
+                        icon: 'success',
+                        customClass: {
+                            confirmButton: "btn btn-primary"
+                        },
+                        buttonsStyling: false,
+                        width: 'max-content'
+                    }).then(result => {
+                        window.location.reload();
+                    });
+                }
+            }).fail(function(xhr, textStatus, thrownError){
+                const abc = xhr.responseText
+                const swal_html = xhr.status == 406 ? '<p class="text-danger">' + abc.replace(/[^a-z0-9:]/gi,' ') + '</p>' : xhr.status == 500 ? '<div class="clearfix"></div>'+abc : false;
+                const swal_width = xhr.status == 406 ? '75%' : xhr.status == 500 ? 'max-content' : false;
+                Swal.fire({
+                    html: swal_html,
+                    title: thrownError + ' : ' + xhr.status,
+                    icon: 'warning',
+                    width: swal_width
+                }).then(result => {
+                    Swal.close()
+                    // $('#comments').modal('hide');
+                });
+            });
+            return false
+        });
+    })
+</script>

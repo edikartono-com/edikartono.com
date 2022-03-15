@@ -1,0 +1,382 @@
+{% extends 'admin/base_site.html' %}
+{% load static %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="{% static 'vendor/sweetalert2/sweetalert2.min.css' %}">
+<style>
+    .nav-comment {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        cursor: pointer;
+        border-bottom: 2px solid #0275d8;
+        background: #ecf0f1;
+        user-select: none;
+        /* transition: fade-in 0.4s, padding-left 0.2s; */
+        padding-left: 0;
+    }
+    .tab-pane.active {
+        animation: fade-in 0.5s ease-in;
+    }
+    @keyframes fade-in {
+        0% { opacity: 0;}
+        100% {opacity: 1;}
+    }
+    .ccyan {
+        background-color: #ecf0f1;
+    }
+    .cblue {
+        background-color: #BBE8FD;
+    }
+    .table-resp {
+        width: 100%;
+        display: table;
+        border-collapse: collapse;
+        box-shadow: 0 0 20px #0275d8;
+    }
+    .table-resp-caption {
+        display:  table-caption;
+        text-align: center;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .table-resp-header {
+        display: table-header-group;
+        background-color: #5bc0de;
+        font-weight: bold;
+    }
+    .table-resp-header-cell {
+        display: table-cell;
+        padding: 10px;
+        text-align: center;
+        /* border-top: 1px solid #0275d8;
+        border-left: 1px solid #0275d8; */
+        border-right: 1px solid #0275d8;
+        border-bottom: 2px solid #0275d8;
+    }
+    .table-resp-body {
+        display: table-row-group;
+    }
+    .table-resp-row {
+        display: table-row;
+    }
+    .table-resp-body-cell {
+        display: table-cell;
+        padding: 5px;
+        border-left: 1px solid #0275d8;
+    }
+</style>
+{% endblock %}
+{% block page_title %}{% block title %}My Comments{% endblock %}{% endblock %}
+
+{% block page_content %}
+<div class="col-12">
+    <div class="card mb-4">
+        <div class="card-header">
+            <nav>
+                <div class="nav nav-pills nav-comment mb-3" id="myComments" role="tablist">
+                    <a class="nav-link active" id="a-approve-tab" data-toggle="tab" href="#approve-tab" role="tab" aria-controls="approve-tab"><i class="fas fa-comment"></i> Approve ({{ comment_count.0 }})</a>
+                    
+                    <a class="nav-link" id="a-unapprove-tab" data-toggle="tab" href="#unapprove-tab" role="tab" aria-controls="unapprove-tab"><i class="fas fa-comment-slash"></i> Unapprove ({{ comment_count.1 }})</a>
+                    
+                    <a class="nav-link" id="a-mark-as-spam-tab" data-toggle="tab" href="#mark-as-spam-tab" role="tab" aria-controls="mark-as-spam-tab"><i class="fas fa-robot"></i> Mark Spam ({{ comment_count.2 }})</a>
+                    
+                    <a class="nav-link text-danger" id="a-deleted-tab" data-toggle="tab" href="#deleted-tab" role="tab" aria-controls="deleted-tab"><i class="far fa-trash-alt"></i> Trash ({{ comment_count.3 }})</a>
+                </div>
+            </nav>
+        </div>
+        <div class="card-body">
+            <div class="tab-content" id="content-myComments">
+                <div class="tab-pane fade show active" id="approve-tab" role="tabpanel" aria-labelledby="a-approve-tab">
+                    {% if comment_count.0 == 0 %}
+                    <div class="alert alert-warning h4"><i class="far fa-surprise"></i> Belum ada komentar</div>
+                    {% else %}
+                    <div class="alert alert-primary h4"><i class="far fa-grin-hearts"></i> Yea</div>
+                    <div class="table-resp">
+                        <div class="table-resp-header">
+                            <div class="table-resp-row table-header-row"></div>
+                        </div>
+                        
+                        <div class="table-resp-body">
+                            {% for ap in approve %}
+                            <div class="table-resp-row {% if forloop.counter|divisibleby:2 %}ccyan{% else %}cblue{% endif %}">
+                                <div class="table-resp-body-cell text-center">{{ forloop.counter }}</div>
+                                <div class="table-resp-body-cell">
+                                    <a href="{{ ap.post.get_absolute_url }}?comment={{ ap.id }}" target="_blank">
+                                        {% if ap.reply %}
+                                        <strong>Jawab komentar: </strong>{{ ap.reply.teks }}
+                                        {% else %}
+                                        {{ ap.post }}
+                                        {% endif %}
+                                    </a>
+                                </div>
+                                <div class="table-resp-body-cell">{{ ap.teks }}</div>
+                                <div class="table-resp-body-cell">{{ ap.cmdate }}</div>
+                                <div class="table-resp-body-cell">
+                                    <button type="button" class="btn btn-danger trash" value="{% url 'akun:trash_comment' ap.id %}">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="unapprove-tab" role="tabpanel" aria-labelledby="a-unapprove-tab">
+                    {% if comment_count.1 == 0 %}
+                    <div class="alert alert-primary h4"><i class="far fa-grin-hearts"></i> Yea</div>
+                    {% else %}
+                    <div class="alert alert-info h4"><i class="far fa-smile-wink fa-lg"></i> Mungkin komentar ini perlu diperbaiki agar bisa approve.</div>
+                    <div class="table-resp">
+                        <div class="table-resp-header">
+                            <div class="table-resp-row table-header-row"></div>
+                        </div>
+                        
+                        <div class="table-resp-body">
+                            {% for ap in unapprove %}
+                            <div class="table-resp-row {% if forloop.counter|divisibleby:2 %}ccyan{% else %}cblue{% endif %}">
+                                <div class="table-resp-body-cell text-center">{{ forloop.counter }}</div>
+                                {% if ap.reply %}
+                                <div class="table-resp-body-cell">
+                                    <p><strong>Jawab komentar: </strong>{{ ap.reply.teks }}</p>
+                                </div>
+                                {% else %}
+                                <div class="table-resp-body-cell">{{ ap.post }}</div>
+                                {% endif %}
+                                <div class="table-resp-body-cell">{{ ap.teks }}</div>
+                                <div class="table-resp-body-cell">{{ ap.cmdate }}</div>
+                                <div class="table-resp-body-cell">
+                                    <button type="button" class="btn btn-primary updt">
+                                        <i class="far fa-edit"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger trash" value="{% url 'akun:trash_comment' ap.id %}">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="mark-as-spam-tab" role="tabpanel" aria-labelledby="a-mark-as-spam-tab">
+                    {% if comment_count.2 == 0 %}
+                    <div class="alert alert-primary h4"><i class="far fa-grin-hearts"></i> Yea</div>
+                    {% else %}
+                    <div class="alert alert-warning h4"><i class="far fa-surprise fa-lg"></i> Komentar yang masuk sebagai spam akan terhapus permanent setelah 30 hari.</div>
+                    <div class="table-resp">
+                        <div class="table-resp-header">
+                            <div class="table-resp-row table-header-row"></div>
+                        </div>
+                        
+                        <div class="table-resp-body">
+                            {% for ap in is_spam %}
+                            <div class="table-resp-row {% if forloop.counter|divisibleby:2 %}ccyan{% else %}cblue{% endif %}">
+                                <div class="table-resp-body-cell text-center">{{ forloop.counter }}</div>
+                                {% if ap.reply %}
+                                <div class="table-resp-body-cell">
+                                    <p><strong>Jawab komentar: </strong>{{ ap.reply.teks }}</p>
+                                </div>
+                                {% else %}
+                                <div class="table-resp-body-cell">{{ ap.post }}</div>
+                                {% endif %}
+                                <div class="table-resp-body-cell">{{ ap.teks }}</div>
+                                <div class="table-resp-body-cell">{{ ap.cmdate }}</div>
+                                <div class="table-resp-body-cell">
+                                    <button type="button" class="btn btn-info recycle">
+                                        <i class="fas fa-recycle"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger delete" value="{% url 'akun:delete_comment' ap.id %}">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="deleted-tab" role="tabpanel" aria-labelledby="a-deleted-tab">
+                    {% if comment_count.3 == 0 %}
+                    <div class="alert alert-primary h4"><i class="far fa-grin-hearts"></i> Yea</div>
+                    {% else %}
+                    <div class="alert alert-warning h4"><i class="fas fa-recycle"></i> Komentar yang masuk <strong>trash</strong> akan terhapus permanent setelah 30 hari.</div>
+                    <div class="table-resp">
+                        <div class="table-resp-header">
+                            <div class="table-resp-row table-header-row"></div>
+                        </div>
+                        
+                        <div class="table-resp-body">
+                            {% for ap in is_deleted %}
+                            <div class="table-resp-row {% if forloop.counter|divisibleby:2 %}ccyan{% else %}cblue{% endif %}">
+                                <div class="table-resp-body-cell text-center">{{ forloop.counter }}</div>
+                                {% if ap.reply %}
+                                <div class="table-resp-body-cell">
+                                    <p><strong>Jawab komentar: </strong>{{ ap.reply.teks }}</p>
+                                </div>
+                                {% else %}
+                                <div class="table-resp-body-cell">{{ ap.post }}</div>
+                                {% endif %}
+                                <div class="table-resp-body-cell">{{ ap.teks }}</div>
+                                <div class="table-resp-body-cell">{{ ap.deleted_at }}</div>
+                                <div class="table-resp-body-cell">
+                                    <button type="button" value="{% url 'akun:undelete_comment' ap.id %}" class="btn btn-success restore">
+                                        <i class="fas fa-trash-restore"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-danger delete" value="{% url 'akun:delete_comment' ap.id %}">
+                                        <i class="far fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'vendor/sweetalert2/sweetalert2.min.js' %}"></script>
+<script type="text/javascript">
+    window.addEventListener("load", function(){
+        const table_header_row = document.createElement('template');
+        table_header_row.innerHTML = '<div class="table-resp-header-cell">No</div>' +
+        '<div class="table-resp-header-cell">Post</div>' +
+        '<div class="table-resp-header-cell">Komentar</div>' +
+        '<div class="table-resp-header-cell">Tanggal</div>' +
+        '<div class="table-resp-header-cell">Aksi</div>';
+        $('.table-header-row').html(table_header_row.content);
+    });
+
+    const swalDefaultButton = Swal.mixin({
+        customClass: {
+            confirmButton: 'btn btn-primary',
+            cancelButton: 'btn btn-secondary'
+        },
+        buttonsStyling: false,
+        reverseButtons: true,
+        width: 'max-content',
+        allowOutsideClick: false
+    });
+
+    const noComment = function theComment(btn, step1, step2, step3){
+        const btn_link = btn;
+        swalDefaultButton.fire(step1).then((result) => {
+            if (result.isConfirmed){
+                $.ajax({
+                    url: btn_link,
+                    method: 'GET'
+                }).done(function(data){
+                    swalDefaultButton.fire(step2).then(result => {
+                        window.location.reload();
+                    });
+                }).fail(function(xhr, textStatus, thrownError){
+                    swalDefaultButton.fire({
+                        title: 'Error : '+xhr.status,
+                        html: '<p class="h4 alert alert-danger">Terjadi Kesalahan, <br>halaman akan refresh dalam <strong></strong> detik</p>',
+                        icon: 'error',
+                        timer: 5000,
+                        timerProgressBar: true,
+                        didOpen: () => {
+                            const content = Swal.getHtmlContainer()
+                            const $ = content.querySelector.bind(content)
+                            
+                            Swal.showLoading()
+
+                            timerInterval = setInterval(() => {
+                                Swal.getHtmlContainer().querySelector('strong')
+                                .textContent = (Swal.getTimerLeft() / 1000)
+                                .toFixed(0)
+                            }, 100)
+                        },
+                        willClose: () => {
+                            clearInterval(timerInterval)
+                        }
+                    }).then( result => {
+                        window.location.reload();
+                    });
+                });
+            } else if (result.dismiss === Swal.DismissReason.cancel){
+                swalDefaultButton.fire(step3)
+            };
+        });
+    };
+
+    $('.trash').on('click', function(){
+        let btn = $(this).val();
+        let step1 = {
+            title: "Komentar akan dihapus?",
+            html: 'Komentar yang telah dihapus, membutuhkan persetujuan ulang kemudian.',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '<i class="far fa-trash-alt"></i> Ya, hapus!',
+            cancelButtonText: '<i class="far fa-times-circle"></i> Tidak!'
+        }
+        let step2 = {
+            title: 'Dihapus',
+            html:'Komentar kamu sudah dihapis, lihat pada tab <strong>Trash</strong>',
+            icon:'success'
+        }
+        let step3 = {
+            title:'Batal',
+            html:'Komentar batal dihapus!',
+            icon:'error'
+        }
+        noComment(btn, step1, step2, step3)
+    });
+    $('.restore').on('click', function(){
+        let btn = $(this).val();
+        let step1 = {
+            title: "Komentar akan di kembalikan?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '<i class="fas fa-trash-restore"></i> Ya',
+            cancelButtonText: '<i class="far fa-times-circle"></i> Tidak!'
+        }
+        let step2 = {
+            title: 'Lihat Unapprove',
+            html:'Komentar kamu sekarang berada di tab <strong>Unapprove</strong>',
+            icon:'success'
+        }
+        let step3 = {
+            title:'Batal',
+            html:'Aksi ini dibatalkan',
+            icon:'error',
+            timer: 3000,
+            timerProgressBar: true,
+        }
+        noComment(btn, step1, step2, step3)
+    });
+    $('.delete').on('click', function(){
+        let btn = $(this).val();
+        let step1 = {
+            title: "Komentar dihapus permanen?",
+            html: 'Komentar yang dihapus permanen <br>tidak bisa dikembalikan lagi',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: '<i class="far fa-trash-alt"></i> Ya, hapus!',
+            cancelButtonText: '<i class="far fa-times-circle"></i> Tidak!'
+        }
+        let step2 = {
+            title: 'Komentar dihapus!',
+            html:'Komentar kamu sudah dihapus selama-lamanya',
+            icon:'success'
+        }
+        let step3 = {
+            title:'Batal',
+            html:'Aksi ini dibatalkan',
+            icon:'error',
+            timer: 3000,
+            timerProgressBar: true,
+        }
+        noComment(btn, step1, step2, step3)
+    })
+    // $('.updt').on('click');
+    // $('.delete').on('click');
+</script>
+{% endblock %}

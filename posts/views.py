@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views.generic import DetailView, ListView, TemplateView
 from django.views.generic.edit import FormMixin
 
+from corecode.encoder import url_encode
 from corecode.utils import SearchRelated
 from posts import models as pmd
 
@@ -38,14 +39,16 @@ class PostDetail(TemplateView):
     def get_context_data(self, *args, **kwargs):
         post = pmd.Posts.objects.get(slug=self.kwargs['post'])
         context = super(PostDetail, self).get_context_data(*args, **kwargs)
+        hash_id = url_encode(str(post.id))
         context['blog'] = post
+        context['hash'] = hash_id
+        context['lates_post'] = search.lates_post(5)
         context['related_post'] = search.random_related(
             num=5,
             slug=self.kwargs['post'],
             status='PBL',
             term=self.kwargs['term']
         )
-        context['lates_post'] = search.lates_post(5)
         return context
 
 class TermListView(ListView):

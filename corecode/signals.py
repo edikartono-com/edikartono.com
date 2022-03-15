@@ -23,7 +23,7 @@ def _if_has_cached(instance, cache_img):
         try:
             file = field_attr.file
             os.remove(str(file))
-        except MissingSource:
+        except FileNotFoundError or MissingSource:
             pass
         else:
             cache_backend = field_attr.cachefile_backend

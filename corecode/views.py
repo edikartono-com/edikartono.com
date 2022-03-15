@@ -1,12 +1,11 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, TemplateView, View
+from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView
 
 from corecode import models as cmd, sweetify
 from corecode.utils import CreateChart, IsStaffPermissionMixin, LoginMixin
-from posts.models import Terms, Posts
+from posts.models import Terms
 
 create_chart = CreateChart()
 
