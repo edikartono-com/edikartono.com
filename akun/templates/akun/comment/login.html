@@ -1,0 +1,66 @@
+{% load i18n static widget_tweaks %}
+
+<div class="modal-dialog modal-md" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            {{ text_form }}
+            <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <form method="POST" id="myForm" action="{% url 'account_login' %}" class="row row-cols-lg-auto g-3 align-items-center">
+                        {% for hidden in form.hidden_fields %}
+                        {{ hidden }}
+                        {% endfor %}
+                        {% csrf_token %}
+                        {{ form.media }}
+                        {% if form.errors %}
+                            <div class="container">
+                                <div class="alert alert-danger alert-dismissible">
+                                    {% if errors|length == 1 %}
+                                        {% trans "Please correct the error below." %}
+                                    {% else %}
+                                        {% trans "Please correct the errors below." %}
+                                    {% endif %}
+                                </div>
+                                {% for error in form.non_field_errors %}
+                                    <div class="alert alert-danger alert-dismissible">
+                                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
+                                        <i class="icon fa fa-ban"></i>{{ error|capfirst }}
+                                    </div>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        <div class="col-12 mb-3">
+                            <div class="input-group">
+                                {% render_field form.login class="form-control" placeholder=form.login.label %}
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <div class="input-group">
+                                {% render_field form.password class="form-control" placeholder=form.password.label %}
+                            </div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <div class="form-check">
+                                {% render_field form.remember class="form-check-input" %}
+                                <label class="form-check-label" for="{{ form.remember.id_for_label }}">{{ form.remember.label }}</label>
+                            </div>
+                            <div class="form-text text-muted"><small>{{ form.remember.help_text }}</small></div>
+                        </div>
+
+                        <div class="col-12 mb-3">
+                            <button class="btn btn-primary" type="submit">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

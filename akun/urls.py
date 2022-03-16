@@ -15,4 +15,5 @@ comment_url = [
 urlpatterns = [
     path('comments/', include(comment_url)),
     path('', views.MyAkunView.as_view(), name='dashboard'),
+    path('signin/comment/', views.login_from_comment, name='comment_login'),
 ]

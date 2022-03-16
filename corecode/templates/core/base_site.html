@@ -46,6 +46,8 @@
     </style>
     
     <script src="{% static 'js/lazysizes.min.js' %}" async="async"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.all.min.js" integrity="sha512-HL3ljb5fSrMMfAiRxSP+EdI/KC1kl6gVIzCV7GaJ4yFWCpnrcGxPAmytnKk9KNigFhyICxOlgD+uuaS07t7RdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Template Name: DevBlog - v0.0.1b -->
     <!-- =======================================================
         * Template Name: DevFolio - v2.3.0
@@ -189,7 +191,6 @@
     
     {% block add_js %}
     <!-- Vendor JS Files -->
-    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script defer src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
     <script defer src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}"></script>
     <script defer src="{% static 'vendor/waypoints/jquery.waypoints.min.js' %}"></script>
@@ -197,7 +198,6 @@
     <script defer src="{% static 'vendor/owl.carousel/owl.carousel.min.js' %}"></script>
     <script defer src="{% static 'vendor/typed.js/typed.min.js' %}"></script>
     <script defer src="{% static 'vendor/venobox/venobox.min.js' %}"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.all.min.js" integrity="sha512-HL3ljb5fSrMMfAiRxSP+EdI/KC1kl6gVIzCV7GaJ4yFWCpnrcGxPAmytnKk9KNigFhyICxOlgD+uuaS07t7RdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <!-- Template Main JS File -->
     <script defer="defer" src="{% static 'js/main.js' %}"></script>
     {% endblock %}

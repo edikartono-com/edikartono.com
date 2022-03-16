@@ -46,6 +46,9 @@
                                         <span style="font-size: 0.8em;"><a href="?comment={{ reply.id }}">{{ comment.cmdate | date:'d M Y H:i:s T' }}</a></span>
                                     </span>
                                     <p> {{ reply.teks | striptags | escape }}</p>
+                                    <div>
+                                        <button type="button" value="{% url 'akun:comment_make' %}?room={{ hash }}&block={{ reply.id }}" class="comment reply">Jawab</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -77,13 +80,13 @@
                 async: true,
                 url: xyz
             }).done(function(data){
-            $('#comments').modal('hide');
-                $('#comments').on('shown.bs.modal', function(){
-                    $('#comments').html(data);
+                $('#myModal').modal('hide');
+                $('#myModal').on('shown.bs.modal', function(){
+                    $('#myModal').html(data);
                     $('#myForm').attr('action', xyz);
                 });
-                $('#comments').modal('show');
+                $('#myModal').modal('show');
             })
         });
     });
-  </script>
+</script>

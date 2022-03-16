@@ -1,8 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.core import serializers
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
@@ -11,6 +10,7 @@ from django.views.generic import TemplateView, View
 from django.views.generic.edit import FormMixin
 
 from akun import forms as frm, models as mak
+from allauth.account.forms import LoginForm
 from corecode.encoder import url_decode
 from corecode.shortcuts import query, required_ajax
 from corecode.utils import LoginMixin, paginate_me
@@ -49,7 +49,11 @@ class PostComment(FormMixin, View):
         if self.request.user.is_authenticated:
             text_form = mark_safe('''<h5 class="h3 modal-title">Tulis komentar</h5>''')
         else:
-            text_form = mark_safe('''<h5 class="h4 modal-title">Silahkan <a href="{url}">login</a>, untuk mengelola diskusi</h5>'''.format(url=reverse_lazy('core:cek_user')))
+            text_form = mark_safe('''<h5 class="h4 modal-title">
+            Silahkan <button type="button" value="{url}" 
+            class="btn btn-link login-from-comment">login</button>, 
+            untuk mengelola diskusi
+            </h5>'''.format(url=reverse_lazy('akun:comment_login')))
         context = {
             "form": form,
             "text_form": text_form
@@ -167,3 +171,10 @@ def permanent_delete(request, pk):
     qs = query(mak.Comments).get(id=pk)
     qs.delete()
     return JsonResponse("OK", safe=False)
+
+def login_from_comment(request):
+    context = {
+        "form": LoginForm,
+        "text_form": "Login form"
+    }
+    return render(request, 'akun/comment/login.html', context)

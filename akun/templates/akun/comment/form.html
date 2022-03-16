@@ -59,6 +59,7 @@
 <script>
     $(document).ready(function(){
         const frm = $('#myForm');
+        let swalTitle = "Komentar kamu berhasil disimpan";
         
         $('#myForm').submit(function(e){
             $.ajax({
@@ -77,8 +78,7 @@
                     }
                 } else {
                     Swal.fire({
-                        title: "Komentar kamu berhasil disimpan",
-                        html: "Komentar akan direview oleh admin",
+                        title: swalTitle,
                         icon: 'success',
                         customClass: {
                             confirmButton: "btn btn-primary"
@@ -104,6 +104,22 @@
                 });
             });
             return false
+        });
+
+        $('.login-from-comment').on('click', function(e){
+            e.preventDefault();
+            swalTitle = "Login berhasil";
+            const xyz = $(this).val();
+            $.ajax({
+                async: true,
+                url: xyz
+            }).done(function(data){
+                $('#myModal').modal('hide');
+                $('#myModal').on('shown.bs.modal', function(){
+                    $('#myModal').html(data);
+                });
+                $('#myModal').modal('show');
+            })
         });
     })
 </script>
