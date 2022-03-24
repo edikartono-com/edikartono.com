@@ -9,7 +9,7 @@ Akhirnya saya memutuskan untuk membagikan <em>source code</em> blog saya, namun 
 1. Blog dengan komentar
 2. sitemap.xml <del>dan yandex.xml</del>
 3. dioptimasi untuk SEO
-4. multi user dengan group
+4. <del>multi user dengan group</del>
 5. sidebar (static) pencarian artikel, kategori, artikel terbaru, random related artikel
 6. admin (django-jazzmin) https://github.com/farridav/django-jazzmin
 7. user social login (django-allauth) caranya : https://django-allauth.readthedocs.io/en/latest/providers.html
@@ -22,7 +22,7 @@ Namun karena project ini tidak murni 100% karya saya, maka bisa saja terdapat pe
 
 Template (backend dan frontend) juga module yang digunakan. Masing-masing memiliki lisensinya sendiri.
 
-# Cara Menggunakannya
+# Install
 siapkan sebuah virtual environment, buat project dan
 
 <code>clone https://github.com/edikartono-com/dev-blog.git</code>
@@ -271,7 +271,7 @@ urlpatterns = [
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 </code></pre>
 
-isntall module python yang dibutuhkan
+install module python yang dibutuhkan
 
 <pre><code>pip install -r requirements.txt
 
@@ -288,9 +288,9 @@ Beberapa masih belum sempurna, seperti yandex.xml yang belum bisa diakses.
 3. Product dan shopping cart
 
 # Informasi Kontak
-Untuk fitur khusus dan commercial support, Kamu bisa menghubungi saya di:
+Untuk fitur khusus dan butuh commercial support, Kamu bisa menghubungi saya di:
 
-telegram & twitter: @edikartono
-email : bisnis@edikartono.com
-blog : https://edikartono.com
+telegram & twitter: @edikartono <br>
+email : bisnis@edikartono.com <br>
+blog : https://edikartono.com <br>
 YT Channel : https://www.youtube.com/c/EdiKartonoCom
