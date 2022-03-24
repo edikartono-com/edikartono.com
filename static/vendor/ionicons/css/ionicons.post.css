@@ -22,3 +22,13 @@
 .ion-pricetag:before { content: "\f2aa"; }
 
 .ion-search:before { content: "\f21f"; }
+
+.ion-reply-all:before { content: "\f21d"; }
+
+.ion-chatbox-working:before { content: "\f11a"; }
+
+.ion-chatbubble:before { content: "\f11e"; }
+
+.ion-chatbubble-working:before { content: "\f11d"; }
+
+.ion-chatbubbles:before { content: "\f11f"; }

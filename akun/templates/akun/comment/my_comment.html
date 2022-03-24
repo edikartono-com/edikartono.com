@@ -165,7 +165,7 @@
                     <div class="alert alert-primary h4"><i class="far fa-grin-hearts"></i> Yea</div>
                     {% else %}
                     <div class="alert alert-warning h4"><i class="far fa-surprise fa-lg"></i> Komentar yang masuk sebagai spam akan terhapus permanent setelah 30 hari.</div>
-                    <div class="table-resp">
+                    <div class="table-resp mb-4">
                         <div class="table-resp-header">
                             <div class="table-resp-row table-header-row"></div>
                         </div>
@@ -194,6 +194,12 @@
                             </div>
                             {% endfor %}
                         </div>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="button" class="btn btn-danger delete" value="{% url 'akun:all_spam_delete' %}">
+                            <i class="fas fa-eraser"></i> Bersihkan spam
+                        </button>
                     </div>
                     {% endif %}
                 </div>
@@ -224,9 +230,9 @@
                                     <button type="button" value="{% url 'akun:undelete_comment' ap.id %}" class="btn btn-success restore">
                                         <i class="fas fa-trash-restore"></i>
                                     </button>
-                                    <button type="button" class="btn btn-danger delete" value="{% url 'akun:delete_comment' ap.id %}">
+                                    <!-- <button type="button" class="btn btn-danger delete" value="{% url 'akun:delete_comment' ap.id %}">
                                         <i class="far fa-trash-alt"></i>
-                                    </button>
+                                    </button> -->
                                 </div>
                             </div>
                             {% endfor %}
@@ -375,8 +381,6 @@
             timerProgressBar: true,
         }
         noComment(btn, step1, step2, step3)
-    })
-    // $('.updt').on('click');
-    // $('.delete').on('click');
+    });
 </script>
 {% endblock %}

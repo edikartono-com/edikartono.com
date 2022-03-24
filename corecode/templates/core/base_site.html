@@ -116,7 +116,6 @@
                         elemnt.innerHTML = '{{ message|safe|capfirst }}';
                         Swal.fire({
                             icon: '{{ message.tags|cut:"alert-" }}',
-                            toast: true,
                             title: '{{ message.tags|cut:"alert-" }}',
                             html: elemnt,
                             timer: 5000,
@@ -203,7 +202,6 @@
     {% endblock %}
     
     {% block ext_js %}{% endblock %}
-    <script defer src="{% static 'js/new.contact.js' %}"></script>
   </body>
   
 </html>

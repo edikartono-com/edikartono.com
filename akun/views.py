@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
@@ -12,17 +13,142 @@ from django.views.generic.edit import FormMixin
 from akun import forms as frm, models as mak
 from allauth.account.forms import LoginForm
 from corecode.encoder import url_decode
-from corecode.shortcuts import query, required_ajax
+from corecode.shortcuts import filter_qurey, query, required_ajax
 from corecode.utils import LoginMixin, paginate_me
 
+@login_required
+@required_ajax
+def trash_comment(request, pk):
+    qs = query(mak.Comments).get(id=pk)
+    qs.soft_delete(request.user)
+    return JsonResponse("OK", safe=False)
+
+@login_required
+@required_ajax
+def undelete_comment(request, pk):
+    qs = query(mak.Comments).get(id=pk)
+    qs.undelete()
+    return JsonResponse("OK", safe=False)
+
+@login_required
+@required_ajax
+def permanent_delete(request, pk):
+    qs = query(mak.Comments).get(id=pk)
+    qs.delete()
+    return JsonResponse("OK", safe=False)
+
+@login_required
+@required_ajax
+def all_spam_clean(request):
+    qs = filter_qurey(mak.Comments, user=request.user, is_spam=True)
+    qs.delete()
+    return JsonResponse("OK", safe=False)
+
+@required_ajax
+def login_from_comment(request):
+    context = {
+        "form": LoginForm,
+        "text_form": "Login form"
+    }
+    return render(request, 'akun/comment/login.html', context)
+    
 class MyAkunView(LoginMixin, TemplateView):
-    template_name = 'akun/my_profile.html'
+    template_name = 'akun/profile/my_profile.html'
 
     def get_context_data(self, *args, **kwargs):
         context = super(MyAkunView, self).get_context_data(*args, **kwargs)
         akun = get_object_or_404(User, username=self.request.user)
         context['akun'] = akun
         return context
+
+class UpdateMyGeneralProfile(LoginMixin, FormMixin, View):
+    template_name = 'akun/profile/form.html'
+
+    def instance_m(self):
+        um = query(User).get(username=self.request.user)
+        ge = query(mak.MyAkun).get(user=self.request.user)
+        return um, ge
+
+    @method_decorator(required_ajax)
+    def get(self, *args, **kwargs):
+        um, ge = self.instance_m()
+        form_um = frm.FormUserGen1(instance=um)
+        form_ge = frm.FormUserGen2(instance=ge)
+        form = {
+            "form_um": form_um,
+            "form_ge": form_ge,
+            "text_form": "Update Profile"
+        }
+        return render(self.request, self.template_name, form)
+    
+    def form_invalid(self, form_um, form_ge):
+        form = {
+            "success": False,
+            "err_code": "invalid_form",
+            "err_msg": [form_um.errors, form_ge.errors]
+        }
+        return JsonResponse(form, safe=False)
+
+    @method_decorator(required_ajax)
+    def post(self, *args, **kwargs):
+        um, ge = self.instance_m()
+        form_um = frm.FormUserGen1(self.request.POST, instance=um)
+        form_ge = frm.FormUserGen2(self.request.POST, instance=ge)
+        if form_um.is_valid() and form_ge.is_valid():
+            um = form_um.save()
+            ge = form_ge.save(um)
+            return JsonResponse("OK", safe=False)
+        else:
+            return self.form_invalid(form_um, form_ge)
+
+class UpdateOrCreateBio(LoginForm, FormMixin, View):
+    template_name = 'akun/profile/form.html'
+
+    def qs_bio(self):
+        try:
+            obj = query(mak.BioAccount).get(akun=self.request.user)
+            return obj
+        except mak.BioAccount.DoesNotExist:
+            pass
+
+    @method_decorator(required_ajax)
+    def get(self, *args, **kwargs):
+        bio = self.qs_bio()
+        print(bio)
+        form = frm.FormBio
+
+        if self.qs_bio():
+            form = frm.FormBio(instance=self.qs_bio())
+        
+        context = {
+            "form" : form,
+            "text_form" : "Update Bio"
+        }
+        return render(self.request, self.template_name, context)
+    
+    def form_invalid(self, form):
+        context = {
+            'success': False,
+            'err_code': 'invalid_form',
+            'err_msg': form.errors
+        }
+        return JsonResponse(context, safe=False)
+
+    @method_decorator(required_ajax)
+    def post(self, *args, **kwargs):
+        form = frm.FormBio(self.request.POST)
+
+        if self.qs_bio():
+            form = frm.FormBio(self.request.POST, instance=self.qs_bio())
+        
+        if form.is_valid():
+            bio = form.save(commit=False)
+            bio.akun = self.request.user
+            bio.save()
+            form.save_m2m()
+            return JsonResponse("OK", safe=False)
+        else:
+            return self.form_invalid(form)
 
 class PostComment(FormMixin, View):
     template_name = 'akun/comment/form.html'
@@ -36,7 +162,7 @@ class PostComment(FormMixin, View):
         return form_class(**self.get_form_kwargs())
 
     @method_decorator(required_ajax)
-    def post(self, request, *args, **kwargs):
+    def post(self, *args, **kwargs):
         form = self.get_form(self.request.POST)
         if form.is_valid():
             return self.form_valid(form)
@@ -89,6 +215,7 @@ class PostComment(FormMixin, View):
         
         comment.active = True
         comment.save()
+        messages.success(self.request, "Komentar kamu sudah muncul")
         return JsonResponse("OK", status=200, safe=False)
 
 class CommentsView(View):
@@ -121,13 +248,13 @@ class MyComments(LoginMixin, TemplateView):
         today_datetime = datetime.strptime(dt_today, "%d-%m-%Y %H:%M:%S")
 
         for c in comments.filter(user=self.request.user):
-            if c.is_deleted == True:
-                next_delete = (c.deleted_at + relativedelta(days=+30)).strftime("%d-%m-%Y %H:%M:%S")
+            if c.is_spam == True:
+                next_delete = (c.cmdate + relativedelta(days=+30)).strftime("%d-%m-%Y %H:%M:%S")
                 date_delete = datetime.strptime(next_delete, "%d-%m-%Y %H:%M:%S")
                 if today_datetime >= date_delete:
                     exe_del = c.delete()
                     if exe_del:
-                        messages.info(self.request, "Beberapa komentar telah dihapus dari trash")
+                        messages.info(self.request, "Beberapa spam komentar telah dihapus permanent")
 
         approve = paginate_me(self.request, comments.comments_approve(user))
         unapprove = paginate_me(self.request, comments.comments_unapprove(user))
@@ -146,35 +273,3 @@ class MyComments(LoginMixin, TemplateView):
         context['is_deleted'] = is_deletes
         context['comment_count'] = list_count
         return context
-
-    # def get_queryset(self):
-    #     self.queryset = query(mak.Comments).get_my_comments(self.request.user)
-    #     return super(MyComments, self).get_queryset()
-
-@login_required
-@required_ajax
-def trash_comment(request, pk):
-    qs = query(mak.Comments).get(id=pk)
-    qs.soft_delete(request.user)
-    return JsonResponse("OK", safe=False)
-
-@login_required
-@required_ajax
-def undelete_comment(request, pk):
-    qs = query(mak.Comments).get(id=pk)
-    qs.undelete()
-    return JsonResponse("OK", safe=False)
-
-@login_required
-@required_ajax
-def permanent_delete(request, pk):
-    qs = query(mak.Comments).get(id=pk)
-    qs.delete()
-    return JsonResponse("OK", safe=False)
-
-def login_from_comment(request):
-    context = {
-        "form": LoginForm,
-        "text_form": "Login form"
-    }
-    return render(request, 'akun/comment/login.html', context)

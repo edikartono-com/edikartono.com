@@ -1,11 +1,12 @@
-from django.forms import ModelForm, ModelMultipleChoiceField
+from django import forms
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
+
 from corecode.models import Intro, Poster
 from corecode import validation as img_val
 
-class FormIntro(ModelForm):
+class FormIntro(forms.ModelForm):
     class Meta:
         model = Intro
         fields = '__all__'
@@ -17,7 +18,7 @@ class FormIntro(ModelForm):
         # maks file gambar 1 MB
         return img_val.image_validator(self.cleaned_data, 'bg_image', 1*1024*1024)
 
-class FormPoster(ModelForm):
+class FormPoster(forms.ModelForm):
     class Meta:
         model = Poster
         fields = '__all__'
@@ -27,12 +28,12 @@ class FormPoster(ModelForm):
         return img_val.image_validator(self.cleaned_data, 'image', 102400)
 
 XUser = get_user_model()
-class GroupAdminForm(ModelForm):
+class GroupAdminForm(forms.ModelForm):
     class Meta:
         model = Group
         exclude = []
     
-    users = ModelMultipleChoiceField(
+    users = forms.ModelMultipleChoiceField(
         queryset=XUser.objects.all(),
         required=False,
         widget=FilteredSelectMultiple('users', False)

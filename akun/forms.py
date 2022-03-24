@@ -1,4 +1,5 @@
-from django.forms import ModelForm
+from django.contrib.auth.models import User
+from django.forms import Form, ModelForm
 
 from akun import models as mak
 from corecode import validation
@@ -19,3 +20,24 @@ class FormCommentAnonym(FormCommentUser):
     def __init__(self, *args, **kwargs):
         super(FormCommentAnonym, self).__init__(*args, **kwargs)
         self.fields['nama'].validators = [validation.huruf_saja]
+
+class FormUserGen1(ModelForm):
+    class Meta:
+        prefix = 'user_form'
+        model = User
+        fields = ['first_name','last_name']
+    
+    def __init__(self, *args, **kwargs):
+        super(FormUserGen1, self).__init__(*args, **kwargs)
+        self.fields['first_name'].validators = [validation.huruf_saja]
+        self.fields['last_name'].validators = [validation.huruf_saja]
+
+class FormUserGen2(ModelForm):
+    class Meta:
+        model = mak.MyAkun
+        fields = ['gender','alamat']
+
+class FormBio(ModelForm):
+    class Meta:
+        model = mak.BioAccount
+        exclude = ['akun']

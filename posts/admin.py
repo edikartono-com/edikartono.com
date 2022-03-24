@@ -14,9 +14,15 @@ admin.site.unregister(pmd.Posts)
 class PostsAdmin(admin.ModelAdmin):
     """ menambahkan form untuk validasi gambar """
     form = frm.FormPosts
-    list_display = ['title','term','author','create','status']
+    list_display = ['title','tag_list','term','author','create','status']
     list_per_page = 25
     search_fields = ['title','term__name','author__username']
+    # fieldsets = (
+    #     (None, {'fields': ('tags',)}),
+    # )
+
+    def tag_list(self, obj):
+        return u", ".join(o.name for o in obj.tags.all())
 
     def save_model(self, request, obj, form, change):
         """ assign author oleh user yang sedang login """

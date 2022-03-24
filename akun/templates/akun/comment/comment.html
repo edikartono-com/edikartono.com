@@ -22,19 +22,36 @@
             <div class="col-md-12">
                 {% for comment in comments %}
                     <div class="mb-2">
-                        {% if not comment.reply %}
+                        {% if comment.active %}
                         <div class="alert alert-primary" id="id-{{ comment.id }}">
                             <span>
                                 <span class="ion-chatbox-working"></span> {% if comment.user %}{{ comment.user }}{% else %}{{ comment.nama | striptags | escape }}{% endif %} | 
                                 <span class="ion-calendar"></span> 
                                 <span style="font-size: 0.8em;"><a href="?comment={{ comment.id }}">{{ comment.cmdate | date:'d M Y H:i:s T' }}</a></span>
                             </span>
-                            <p>{{ comment.teks | striptags | escape }}</p>
+                            <p>{{ comment.teks | striptags | escape }} {{ comment.id }} {{ comment.reply_id }}</p>
                             <div>
                                 <button type="button" value="{% url 'akun:comment_make' %}?room={{ hash }}&block={{ comment.id }}" class="comment reply">Jawab</button>
                             </div>
                         </div>
                         {% endif %}
+                        
+                        {% if comment.is_deleted %}
+                        <div class="alert alert-primary" id="id-{{ comment.id }}">
+                            <span>
+                                <span class="ion-chatbox-working"></span> {% if comment.user %}{{ comment.user }}{% else %}{{ comment.nama | striptags | escape }}{% endif %} | 
+                                <span class="ion-calendar"></span> 
+                                <span style="font-size: 0.8em;"><a href="?comment={{ comment.id }}">{{ comment.cmdate | date:'d M Y H:i:s T' }}</a></span>
+                            </span>
+                            <p>
+                                <em>Komentar ini telah dihapus</em> 
+                                {% if request.user == comment.user %}
+                                Oleh : Anda
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% endif %}
+
                         {% for reply in comment.replies.all %}
                         {% if reply.active %}
                         <div class="row">
@@ -45,10 +62,30 @@
                                         <span class="ion-calendar"></span> 
                                         <span style="font-size: 0.8em;"><a href="?comment={{ reply.id }}">{{ comment.cmdate | date:'d M Y H:i:s T' }}</a></span>
                                     </span>
-                                    <p> {{ reply.teks | striptags | escape }}</p>
-                                    <div>
+                                    <p> {{ reply.teks | striptags | escape }} {{ reply.reply_id }}</p>
+                                    <!-- <div>
                                         <button type="button" value="{% url 'akun:comment_make' %}?room={{ hash }}&block={{ reply.id }}" class="comment reply">Jawab</button>
-                                    </div>
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        {% if reply.is_deleted %}
+                        <div class="row">
+                            <div class="col ml-5" style="border-left: 2px solid #0275d8;">
+                                <div class="alert alert-secondary" id="id-{{ reply.id }}">
+                                    <span>
+                                        <span class="ion-reply-all"></span> {% if reply.user %}{{ reply.user }}{% else %}{{ reply.nama | striptags | escape }}{% endif %} | 
+                                        <span class="ion-calendar"></span> 
+                                        <span style="font-size: 0.8em;"><a href="?comment={{ reply.id }}">{{ comment.cmdate | date:'d M Y H:i:s T' }}</a></span>
+                                    </span>
+                                    <p>
+                                        <em>Komentar ini telah dihapus</em> 
+                                        {% if request.user == comment.user %}
+                                        Oleh : Anda
+                                        {% endif %}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -77,8 +114,10 @@
             e.preventDefault();
             const xyz = $(this).val();
             $.ajax({
-                async: true,
-                url: xyz
+                url: xyz,
+                contentType: false,
+                cache: false,
+                processData: false
             }).done(function(data){
                 $('#myModal').modal('hide');
                 $('#myModal').on('shown.bs.modal', function(){

@@ -5,17 +5,16 @@ from django.urls import reverse
 from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
-from corecode import utils as core_utils
+from corecode.manager import UUIDTaggedItem, TaggableManager
 from ckeditor_uploader.fields import RichTextUploadingField
 from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
-from taggit.managers import TaggableManager
 from uuid import uuid4
 
 def upload_to_path(instance, filename):
     return 'posts/{0}/{1}'.format(instance.term, filename)
 
-class Status(models.TextChoices):
+class StatusPosts(models.TextChoices):
     DRAFT = 'DRF', _("Draft")
     PUBLISH = 'PBL', _("Publish")
     DELETE = 'DEL', _("Delete")
@@ -56,11 +55,11 @@ class Posts(models.Model):
     summary = models.TextField(validators=[MaxLengthValidator(200)])
     body = RichTextUploadingField()
     term = models.ForeignKey(Terms, on_delete=models.PROTECT, to_field='slug')
-    tags = TaggableManager(blank=True, through=core_utils.UUIDTaggedItem)
+    tags = TaggableManager(blank=True, through=UUIDTaggedItem)
     author = models.ForeignKey(User, on_delete=models.SET_NULL, blank=False, null=True)
     create = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
-    status = models.CharField(max_length=3, choices=Status.choices, default=Status.PUBLISH)
+    status = models.CharField(max_length=3, choices=StatusPosts.choices, default=StatusPosts.PUBLISH)
     slug = models.SlugField(
         blank=True, null=True, unique=True,
         help_text="Teks dan tanda (-), jika dikosongkan otomatis diambil dari title"

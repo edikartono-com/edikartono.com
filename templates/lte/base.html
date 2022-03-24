@@ -89,7 +89,7 @@
           {% block messages %}
             {% for message in messages %}
             <div class="alert {{ message.tags }} alert-dismissible">
-              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
               <i class="icon fa fa-check"></i>{{ message|capfirst }}
             </div>
             {% endfor %}
@@ -152,7 +152,7 @@
     </div>
 </div>
 {% endif %}
-
+<div id="myModal" class="modal" role="dialog"></div>
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
 <!-- <script src="{% static "admin/js/vendor/jquery/jquery.js" %}"></script> -->
@@ -164,7 +164,7 @@
 <!-- <script src="{% static "jazzmin/js/main.js" %}"></script> -->
 
 <!-- jQuery -->
-<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
 <!-- Bootstrap 4 -->
 <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
 <!-- AdminLTE App -->

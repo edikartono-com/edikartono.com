@@ -1,24 +1,12 @@
 from django.core.validators import MaxLengthValidator, MaxValueValidator, MinValueValidator
 from django.db import models
+from django.utils.text import slugify
 
-from imagekit.models import ProcessedImageField
+from ckeditor_uploader.fields import RichTextUploadingField
+from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 from uuid import uuid4
-
-class CustomManager(models.Manager):
-    def __getattr__(self, attr, *args):
-        try:
-            return getattr(self.__class__, attr, *args)
-        except AttributeError:
-            if attr.startswith('__') and attr.endswith('__'):
-                raise
-            return getattr(self.get_queryset(), attr, *args)
-    
-    def get_queryset(self):
-        return self.model.QuerySet(self.model, using=self._db)
-    # def get_queryset(self):
-    #     return super().get_queryset().filter(show=True)
 
 class Intro(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
@@ -106,3 +94,35 @@ class CounterSec(models.Model):
     
     def __str__(self):
         return "{} {}".format(self.name, self.countd)
+
+def upload_to_path(instance, filename):
+    return 'portofolio/{0}/{1}'.format(instance.term, filename)
+
+class Portofolio(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    project_name = models.CharField(max_length=100, unique=True)
+    description = RichTextUploadingField()
+    source = models.URLField(blank=True, null=True)
+
+    screenshot = models.ImageField(upload_to = upload_to_path, null=True, blank=True)
+    youtube_video = models.URLField(blank=True, null=True)
+
+    slug = models.SlugField(
+        blank=True, null=True, unique=True,
+        help_text="Teks dan tanda (-), jika dikosongkan otomatis diambil dari project_name"
+    )
+
+    img_thumb = ImageSpecField(
+        source='screenshot',
+        processors=[ResizeToFill(499,262)],
+        format='WEBP',
+        options={'quality':80}
+    )
+
+    def save(self):
+        if self.screenshot == None:
+            self.screenshot = slugify(self.project_name)
+        super(Portofolio, self).save()
+    
+    def __str__(self) -> str:
+        return self.project_name

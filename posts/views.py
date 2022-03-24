@@ -25,7 +25,7 @@ class Home(TemplateView):
     def get_context_data(self, *args, **kwargs):
         from corecode.utils import HomePage
         home = HomePage()
-        lates_post = pmd.Posts.objects.filter(status='PBL').defer()[:3]
+        lates_post = pmd.Posts.objects.filter(status=pmd.StatusPosts.PUBLISH).defer()[:3]
         context = super(Home, self).get_context_data(*args, **kwargs)
         context['featured'] = home.featured()
         context['poster'] = home.poster()
@@ -75,7 +75,7 @@ class SeacrhTerm(ListView):
     def get_queryset(self):
         self.q = self.request.GET.get('q')
         self.queryset = pmd.Posts.objects.filter(
-            status='PBL'
+            status=pmd.StatusPosts.PUBLISH
         ).filter(Q(title__icontains=self.q) | Q(body__icontains=self.q))
         return super().get_queryset()
     

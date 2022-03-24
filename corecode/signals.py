@@ -1,7 +1,7 @@
 import os
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
-from corecode.models import Intro, Poster
+from corecode.models import Intro, Poster, Portofolio
 from imagekit.exceptions import MissingSource
 
 def _rfields(instance, fields):
@@ -23,7 +23,7 @@ def _if_has_cached(instance, cache_img):
         try:
             file = field_attr.file
             os.remove(str(file))
-        except FileNotFoundError or MissingSource:
+        except (FileNotFoundError, MissingSource):
             pass
         else:
             cache_backend = field_attr.cachefile_backend
@@ -64,7 +64,7 @@ def intro_after_delete(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Intro)
 def intro_after_update(sender, instance, **kwargs):
-    delete_file_after_update(Intro, instance, 'bg_image')
+    delete_file_after_update(sender, instance, 'bg_image')
 
 @receiver(post_delete, sender=Poster)
 def poster_after_delete(sender, instance, **kwargs):
@@ -72,4 +72,12 @@ def poster_after_delete(sender, instance, **kwargs):
 
 @receiver(pre_save, sender=Poster)
 def poster_after_update(sender, instance, **kwargs):
-    delete_file_after_update(Poster, instance, 'image')
+    delete_file_after_update(sender, instance, 'image')
+
+@receiver(post_delete, sender=Portofolio)
+def portos_after_delete(sender, instance, **kwargs):
+    delete_file_after_delete(instance, 'screenshot', 'img_thumb')
+
+@receiver(pre_save, sender=Portofolio)
+def portos_after_update(sender, instance, **kwargs):
+    delete_file_after_update(sender, instance, 'screenshot', 'img_thumb')

@@ -3,7 +3,24 @@ from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext as _
 
 from corecode.shortcuts import filter_qurey, query
-from taggit.models import GenericUUIDTaggedItemBase, TaggedItemBase
+
+COMMA = ","
+SPACE = " "
+QUOTE = '"'
+DOUBLE_QUOTE = QUOTE + QUOTE
+TREE = "/"
+
+def render_tags(tags):
+    names = []
+    for tag in tags:
+        name = tag #str(tag)
+
+        name = name.replace(QUOTE, DOUBLE_QUOTE)
+        if COMMA in name or SPACE in name:
+            names.append('"%s"' % name)
+        else:
+            names.append(name)
+    return ", ".join(sorted(names))
 
 def paginate_me(request, queryset, num=25):
     from django.core.paginator import Paginator
@@ -195,8 +212,3 @@ class SearchRelated:
         if count >= num:
             qs = qs[:num]
         return qs
-
-class UUIDTaggedItem(GenericUUIDTaggedItemBase, TaggedItemBase):
-    class Meta:
-        verbose_name = _("Tag")
-        verbose_name_plural = _("Tags")

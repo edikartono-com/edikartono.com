@@ -6,11 +6,11 @@ from django.utils.text import slugify
 from django.utils.translation import gettext as _
 
 from ckeditor_uploader.fields import RichTextUploadingField
-from corecode import utils as core_utils
+from corecode.manager import TaggableManager, UUIDTaggedItem
 from decimal import Decimal
 from imagekit.models import ImageSpecField
 from imagekit.processors import ResizeToFill
-from taggit.managers import TaggableManager
+# from taggit.managers import TaggableManager
 from uuid import uuid4
 
 class Coupon(models.Model):
@@ -78,7 +78,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=11, decimal_places=2)
     body = RichTextUploadingField()
     image = models.ImageField(upload_to=upload_to_path)
-    tags = TaggableManager(blank=True, through=core_utils.UUIDTaggedItem)
+    tags = TaggableManager(blank=True, through=UUIDTaggedItem)
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
     status = models.BooleanField(default=True)
