@@ -7,7 +7,7 @@ Akhirnya saya memutuskan untuk membagikan <em>source code</em> blog saya, namun 
 # fitur
 
 1. Blog dengan komentar
-2. sitemap.xml dan yandex.xml
+2. sitemap.xml <del>dan yandex.xml</del>
 3. dioptimasi untuk SEO
 4. multi user dengan group
 5. sidebar (static) pencarian artikel, kategori, artikel terbaru, random related artikel
