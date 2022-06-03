@@ -913,9 +913,11 @@
 .ion-ios-plus:before { content: "\f48b"; }
 
 .ion-ios-plus-empty:before { content: "\f489"; }
+*/
 
 .ion-ios-plus-outline:before { content: "\f48a"; }
 
+/*
 .ion-ios-pricetag:before { content: "\f48d"; }
 
 .ion-ios-pricetag-outline:before { content: "\f48c"; }

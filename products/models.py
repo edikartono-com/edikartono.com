@@ -32,16 +32,22 @@ class Coupon(models.Model):
 def upload_to_path(instance, filename):
     return 'product/{0}/{1}'.format(instance.category, filename)
 
-class ProductService(models.IntegerChoices):
+class ScheduledPaymentChoices(models.IntegerChoices):
     ONE_TIME = 0, _('One time payment')
     SUBSCRIBE = 1, _('Subscription')
 
-class ProductType(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
-    name = models.CharField(max_length=100, unique=True)
+class ScheduleNextPayment(models.Model):
+    due = models.IntegerField(
+        unique=True,
+        help_text='Number recurring month'
+    )
 
     def __str__(self) -> str:
-        return self.name
+        return self.due
+
+class ProductTypeChoices(models.IntegerChoices):
+    DG = 1, _("Produk Digital")
+    FS = 2, _("Produk Fisik")
 
 class ProductsCategorys(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
@@ -57,34 +63,43 @@ class ProductsCategorys(models.Model):
         return self.slug
 
 class Product(models.Model):
-    JENIS = [
-        ('Digital', 'Digital'),
-        ('Fisik', 'Fisik')
-    ]
-    SRV = [
-        ('1', 'Sekali bayar'),
-        ('2', 'Berlangganan')
-    ]
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     name = models.CharField(max_length=150)
-    #jenis = models.CharField(max_length=100, choices=JENIS, default='Digital')
-    jenis = models.ForeignKey(ProductType, on_delete=models.PROTECT, related_name="type_product")
-    service = models.BooleanField(choices=ProductService.choices)
     category = models.ForeignKey(
         ProductsCategorys, on_delete=models.SET_NULL, null=True,
         related_name="categories_product"
     )
-    
-    price = models.DecimalField(max_digits=11, decimal_places=2)
     body = RichTextUploadingField()
     image = models.ImageField(upload_to=upload_to_path)
     tags = TaggableManager(blank=True, through=UUIDTaggedItem)
+    price = models.DecimalField(max_digits=11, decimal_places=2)
+
+    product_typ = models.IntegerField(
+        choices=ProductTypeChoices.choices,
+        default=ProductTypeChoices.DG
+    )
+
+    schedule_payment = models.IntegerField(choices=ScheduledPaymentChoices.choices)
+    min_order = models.IntegerField(
+        validators=[
+            MinValueValidator(1)
+        ]
+    )
+
+    out_link = models.URLField(
+        null=True, blank=True,
+        help_text="Allow order from 3rd site"
+    )
+    youtube = models.URLField(
+        null=True, blank=True,
+        help_text="Link video product on youtube"
+    )
+    
     created = models.DateTimeField(auto_now_add=True)
     update = models.DateTimeField(auto_now=True)
     status = models.BooleanField(default=True)
     slug = models.SlugField(unique=True, null=True, blank=True)
-    out_link = models.URLField(null=True, blank=True)
-
+    
     class Meta:
         ordering = ['-created']
         index_together = (('id','slug'),)
@@ -124,8 +139,17 @@ class Orders(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     member = models.ForeignKey(User, on_delete=models.CASCADE)
     email = models.EmailField(help_text="Gunakan email yang sama dengan akun Anda")
-    deskripsi = models.TextField(help_text="Deskripsikan project yang akan dibuat")
-    coupon = models.ForeignKey(Coupon, related_name="orders", null=True, blank=True, on_delete=models.SET_NULL)
+    describe = models.TextField(help_text="Deskripsikan project yang akan dibuat")
+    recurring = models.ForeignKey(
+        ScheduleNextPayment,
+        on_delete=models.SET_NULL,
+        blank=True, null=True
+    )
+    coupon = models.ForeignKey(
+        Coupon, related_name="orders",
+        null=True, blank=True,
+        on_delete=models.SET_NULL
+    )
     discount = models.IntegerField(default=0, validators=[MinValueValidator(0), MaxValueValidator(100)])
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -169,15 +193,18 @@ class OrderItems(models.Model):
     def get_cost(self):
         return self.price * self.quantity
 
+class PaymentMethodChoices(models.IntegerChoices):
+    BT = 1, _('Bank Transfer')
+    XE = 2, _('Xendit')
+    PP = 3, _('Paypal')
+
 class OrderPayments(models.Model):
-    PAY = [
-        ('1', 'Bank Transfer'),
-        ('2', 'Xendit'),
-        ('3', 'Paypal')
-    ]
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     for_order = models.ForeignKey(Orders, related_name='payments', on_delete=models.CASCADE)
-    pay_method = models.CharField(choices=PAY, default='2', max_length=5)
+    pay_method = models.IntegerField(
+        choices=PaymentMethodChoices.choices,
+        default=PaymentMethodChoices.XE
+    )
     pay_date = models.DateTimeField()
     pay_amount = models.DecimalField(max_digits=10, decimal_places=2)
 

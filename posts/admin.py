@@ -1,4 +1,3 @@
-# https://linggar.asia/?p=616
 from django.contrib import admin
 from django.db.models.base import ModelBase
 
@@ -21,6 +20,11 @@ class PostsAdmin(admin.ModelAdmin):
     #     (None, {'fields': ('tags',)}),
     # )
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        user = request.user
+        return qs if user.is_superuser else qs.filter(author=user)
+
     def tag_list(self, obj):
         return u", ".join(o.name for o in obj.tags.all())
 
@@ -28,6 +32,8 @@ class PostsAdmin(admin.ModelAdmin):
         """ assign author oleh user yang sedang login """
         if obj.author == None:
             obj.author = request.user
+        if not request.user.is_superuser:
+            obj.status = pmd.StatusPosts.DRAFT
         super().save_model(request, obj, form, change)
 
 for model_name in dir(pmd):

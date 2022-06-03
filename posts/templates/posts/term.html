@@ -1,5 +1,5 @@
 {% extends 'core/base_site.html' %}
-{% load static breadcrumbs %}
+{% load static breadcrumbs compress %}
 
 {% block add_meta %}
 <title>{{ list_title }} | {{ request.intro.name }}</title>
@@ -14,8 +14,10 @@
 {% endblock %}
 
 {% block add_style %}
+{% compress css inline %}
 <link rel="stylesheet" href="{% static 'vendor/ionicons/css/ionicons.post.css' %}">
 <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+{% endcompress %}
 
 <link
  rel="prefetch"
@@ -59,7 +61,7 @@
                         <h6 class="category">{{ cls.term }}</h6>
                       </div>
                     </div>
-                    <h3 class="card-title"><a href="{{ cls.get_absolute_url }}">{{ cls.title }}</a></h3>
+                    <h3 class="card-title"><a href="{{ cls.get_absolute_url }}">{{ cls.title|title }}</a></h3>
                     <p class="card-description">{{ cls.summary }}</p>
                   </div>
                   
@@ -120,7 +122,6 @@
       
       <div class="col-md-4">
         {% include 'block/sidebar.html' %}
-        {% include 'block/subscribe.html' %}
       </div>
     </div>
   </div>
@@ -128,9 +129,9 @@
 {% endblock %}
 
 {% block add_js %}
-  <!-- Vendor JS Files -->
-  <script defer="defer" src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+  {% compress js file %}
   <script defer="defer" src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
   <script defer="defer" src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}"></script>
   <script defer="defer" src="{% static 'js/custom.js' %}"></script>
+  {% endcompress %}
 {% endblock %}

@@ -29,11 +29,10 @@
     function showPopup(){
         setCookie('shown', true, 1);
         Swal.fire({
-            // Title: sesuaikan dengan website Anda
             title: "Mau dapat tutorial django melalui email?",
             icon: "question",
             showCancelButton: true,
-            cancelButtonText: 'Tidak, sudah jago!',
+            cancelButtonText: 'Tidak, sudah ahli!',
             confirmButtonText: 'Ya, saya mau!'
         }).then((result) => {
             if(result.isConfirmed){
@@ -63,8 +62,7 @@
     if (!cookie){
         $(window).scroll(function(){
             let wH = $(window).height(), wS = $(this).scrollTop();
-    
-            console.log("wH" + wH, "wS : " + wS, "wS-wH : " + (wS - wH));
+            
             if ((wS-wH) > 100){
                 if(!swalShown){
                     showPopup();

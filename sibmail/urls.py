@@ -10,6 +10,7 @@ get_email = [
 urlpatterns = [
     path('contact/delete/<str:email>/', views.delete_contact, name='contact_delete'),
     path('contact/create/', views.CreateAContact.as_view(), name='create_contact'),
+    path('contact/create/success/', views.success_subscribe, name='sub_success'),
     path('contact/details/', views.MySIBContactDetails.as_view(), name='my_contact_details'),
     path('contact/', views.MySIBContact.as_view(), name='my_contact'),
     path('my-account/', views.MySIBAccount.as_view(), name='sib_account'),

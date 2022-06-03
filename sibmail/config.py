@@ -1,3 +1,5 @@
+# https://developers.sendinblue.com/reference
+
 from json import dumps
 from requests import request
 import sib_api_v3_sdk
@@ -68,15 +70,16 @@ def create_a_contact(email, list_id=5, **payload):
         context = url_response()
     return context
 
-def create_doi_contact(email, success_url, list_id=5, **attr):
+def create_contact_doi(email, success_url, list_id=5, **attr):
     api_instance = configure(sib_api_v3_sdk.ContactsApi)
 
-    doi_contact = sib_api_v3_sdk.CreateDoiContact()
-    doi_contact.email = email
-    doi_contact.attributes = attr
-    doi_contact.include_list_ids = [list_id]
-    doi_contact.template_id = 1
-    doi_contact.redirection_url = success_url
+    doi_contact = sib_api_v3_sdk.CreateDoiContact(
+        email=email,
+        attributes=attr,
+        include_list_ids=[list_id],
+        template_id=8,
+        redirection_url=success_url
+    )
 
     try:
         api_instance.create_doi_contact(doi_contact)

@@ -1,0 +1,151 @@
+{% load i18n static widget_tweaks %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.min.css" integrity="sha512-q3eWabyZPc1XTCmF+8/LuE1ozpg5xxn7iO89yfSOd5/oKvyqLngoNGsx8jq92Y8eXJ/IRxQbEC+FGSYxtk2oiw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    .fab {
+        padding: 20px;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 30%;
+    }
+    .modal-backdrop {
+        background: #3786bd;
+        /* filter: blur(1px) grayscale(90%); */
+    }
+    .innerf, .right {
+        /* border-radius: 10px; */
+        padding: 10px 20px;
+        position: relative;
+        width: 100%;
+    }
+    .right {
+        background: #3786bd;
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+        color: #fff;
+    }
+    .modal-header {
+        background: #3786bd;
+        color: #fff;
+    }
+</style>
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <p class="h3">{{ text_form }}</p>
+        </div>
+
+        <div class="modal-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="innerf">
+                        <h3 class="h4">Subscribe Form</h2>
+                            <form method="POST" id="newContact" class="row row-cols-lg-auto g-3 align-items-center">
+                                {% for hidden in form.hidden_fields %}
+                                {{ hidden }}
+                                {% endfor %}
+                                {% csrf_token %}
+                                {{ form.media }}
+                                {% if form.errors %}
+                                    <div class="container">
+                                        <div class="alert alert-danger alert-dismissible">
+                                            {% if errors|length == 1 %}
+                                                {% trans "Please correct the error below." %}
+                                            {% else %}
+                                                {% trans "Please correct the errors below." %}
+                                            {% endif %}
+                                        </div>
+                                        {% for error in form.non_field_errors %}
+                                            <div class="alert alert-danger alert-dismissible">
+                                                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">X</button>
+                                                <i class="icon fa fa-ban"></i>{{ error|capfirst }}
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                    {% endif %}
+                                <div class="col-12 mb-3">
+                                    <div class="input-group">
+                                        <div class="input-group-text">@</div>
+                                        {% render_field form.email class="form-control" placeholder=form.email.label %}
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <!-- <label class="visually-hidden" for="{{ form.fname.id_for_label }}">{{ form.fname.label }}</label> -->
+                                    <div class="input-group">
+                                        {% render_field form.fname class="form-control" placeholder=form.fname.label %}
+                                    </div>
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <div class="form-check">
+                                        {% render_field form.optin class="form-check-input" %}
+                                        <label class="form-check-label" for="{{ form.optin.id_for_label }}">{{ form.optin.label }}</label>
+                                    </div>
+                                    <div class="form-text text-muted"><small>{{ form.optin.help_text }}</small></div>
+                                </div>
+
+                                <div class="col-12 mb-3">
+                                    <button class="btn btn-primary" type="submit">Simpan</button>
+                                </div>
+                            </form>
+                    </div>
+                </div>
+
+                <div class="col-sm-6">
+                    <div class="right">
+                        <h3 class="h4">Information</h3>
+                    </div>
+                    <p>
+                        <a href="https://t.me/edikartono" target="_blank" rel="noopener no-referrer"><i class="fab fa-telegram fa-3x"></i></a>
+                        <a href="https://web.facebook.com/edikartonocom" target="_blank" rel="noopener no-referrer"><i class="fab fa-facebook fa-3x"></i></a>
+                        <a href="https://www.instagram.com/edi.kartono/" target="_blank" rel="noopener no-referrer"><i class="fab fa-instagram fa-3x"></i></a>
+                        <a href="https://www.youtube.com/c/EdiKartonoCom" target="_blank" rel="noopener no-referrer"><i class="fab fa-youtube fa-3x"></i></a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function(){
+        const frm = $('#newContact');
+        
+        $('#newContact').submit(function(e){
+            $.ajax({
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                data: new FormData(this),
+                contentType: false,
+                cache: false,
+                processData: false
+            }).done(function(data){
+                Swal.fire({
+                    title: "Selamat Kamu Berhasil!",
+                    html: "Silahkan buka email, periksa di folder inbox atau promosi atau spam. <br>Dan ikuti langkah selanjutnya.",
+                    icon: 'success',
+                    customClass: {
+                        confirmButton: "btn btn-primary"
+                    },
+                    buttonsStyling: false,
+                    // width: 'max-content'
+                }).then(result => {
+                    window.location.reload();
+                });
+            }).fail(function(xhr, textStatus, thrownError){
+                const abc = xhr.responseText
+                const swal_html = xhr.status == 406 ? '<p class="text-danger">' + abc.replace(/[^a-z0-9:]/gi,' ') + '</p>' : xhr.status == 500 ? '<div class="clearfix"></div>'+abc : false;
+                const swal_width = xhr.status == 406 ? '75%' : xhr.status == 500 ? 'max-content' : false;
+                Swal.fire({
+                    html: swal_html,
+                    title: thrownError + ' : ' + xhr.status,
+                    icon: 'warning',
+                    width: swal_width
+                }).then(result => {
+                    Swal.close()
+                    // $('#comments').modal('hide');
+                });
+            });
+            return false
+        });
+    })
+</script>

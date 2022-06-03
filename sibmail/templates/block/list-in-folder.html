@@ -1,0 +1,27 @@
+<div class="col-12">
+    <p>List count: {{ in_folder.count }} </p>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Blacklisted</th>
+                <th>Subscribers</th>
+                <th>Unique Subscribers</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for fdr in in_folder.lists %}
+            <tr>
+                <td>
+                    <button type="button" value="{% url 'sibmail:get_linfold' fdr.id %}" class="btn btn-link in-folder">
+                        {{ fdr.name }}
+                    </button>
+                    </td>
+                <td>{{ fdr.totalBlacklisted }}</td>
+                <td>{{ fdr.totalSubscribers }}</td>
+                <td>{{ fdr.uniqueSubscribers }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

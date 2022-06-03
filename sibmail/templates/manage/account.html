@@ -4,16 +4,23 @@
 {% block content_title %}{% block title %}Account SIB{% endblock %}{% endblock %}
 
 {% block content %}
-<div class="row">
-</div>
-<div class="row">
-    <div class="col-xl-12">
-        <div class="card mb-4">
-            <div class="card-header">
-                <i class="fas fa-chart-area me-1"></i>
-                SIB Account
-            </div>
-            <div class="card-body">
+<div class="col-12">
+  <div class="card mb-4">
+    <div class="card-header">
+      <nav>
+        <div class="nav nav-pills mb-3" id="myAccount" role="tablist">
+          <a class="nav-link active" id="a-my-account" data-toggle="tab" href="#my-account-tab" role="tab" aria-controls="my-account-tab">My Account</a>
+          
+          <a class="nav-link" id="a-my-folders" data-toggle="tab" href="#my-folders-tab" role="tab" aria-controls="my-folders-tab">Folders</a>
+          
+        </div>
+      </nav>
+    </div>
+    
+    <div class="card-body">
+      <div class="tab-content" id="contentMyAccount">
+        <div class="tab-pane fade show active" id="my-account-tab" role="tabpanel" aria-labelledby="a-my-account">
+            <div class="col-12">
               {% if account.error %}
               <p class="alert alert-danger">Error : Authentikasi tidak sah!</p>
               <p class="alert alert-info">
@@ -23,7 +30,7 @@
               </p>
               <a href="{% url 'admin:sibmail_sibaccount_changelist' %}" class="btn btn-secondary">Lihat API KEY</a>
               {% else %}
-              <table class="table table-sm table-bordered">
+              <table class="table table-sm">
                 {{ contact }}
                 <thead>
                   <tr>
@@ -35,21 +42,21 @@
                   </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>{{ account.first_name }} {{ account.last_name }}</td>
-                        <td>{{ account.email }}</td>
-                        <td>{{ account.company_name }}</td>
-                        <td>
-                            <p>Street: {{ account.address.street }}</p>
-                            <p>City: {{ account.address.city }}</p>
-                            <p>Country: {{ account.address.country }}</p>
-                            <p>Zip Code: {{ account.address.zip_code }}</p>
-                        </td>
-                        <td>{{ account.plan.type }}</td>
-                    </tr>
+                  <tr>
+                    <td>{{ account.first_name }} {{ account.last_name }}</td>
+                    <td>{{ account.email }}</td>
+                    <td>{{ account.company_name }}</td>
+                    <td>
+                      <p>Street: {{ account.address.street }}</p>
+                      <p>City: {{ account.address.city }}</p>
+                      <p>Country: {{ account.address.country }}</p>
+                      <p>Zip Code: {{ account.address.zip_code }}</p>
+                    </td>
+                    <td>{{ account.plan.type }}</td>
+                  </tr>
                 </tbody>
               </table>
-
+              
               <table class="table table-sm table-bordered">
                 <thead>
                   <tr>
@@ -70,7 +77,7 @@
                   {% endfor %}
                 </tbody>
               </table>
-
+              
               <table class="table table-sm table-bordered">
                 <thead>
                   <tr>
@@ -90,13 +97,32 @@
                 </tbody>
               </table>
               {% endif %}
-            </div>
-  
-            <div class="card-footer clearfix">
-
-            </div>
-  
+          </div>
         </div>
+        
+        <div class="tab-pane fade" id="my-folders-tab" role="tabpanel" aria-labelledby="a-my-folders-tab">
+          <div class="content-my-folder"></div>
+        </div>
+
+      </div>
     </div>
   </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script>
+  $(document).ready(function(){
+    $('#a-my-folders').on('click', function(e){
+      e.preventDefault();
+      console.log("CLICK");
+      $.ajax({
+        url: '{% url "sibmail:get_all_folders" %}',
+        method: 'GET'
+      }).done(function(data){
+        $('.content-my-folder').html(data);
+      })
+    })
+  })
+</script>
 {% endblock %}

@@ -1,12 +1,11 @@
 from uuid import uuid4
 from django.db import models
 
-# Create your models here.
 class SibAccount(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     api_key = models.CharField(
         max_length=255,
-        help_text="Dapatkan API-KEY di <a href='https://sendinblue.tapfiliate.com/publisher/signup/sendinblue-affiliate-program/' target='_blank' rel='noopener'>Send In Blue</a>"
+        help_text="Dapatkan API-KEY di <a href='https://www.sendinblue.com/?tap_a=30591-fb13f0&tap_s=2662645-7d6da9' target='_blank' rel='noopener'>Send In Blue</a>"
     )
 
     class Meta:

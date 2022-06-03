@@ -1,0 +1,114 @@
+{% extends 'core/base_site.html' %}
+{% load static breadcrumbs tagads compress %}
+
+{% block add_meta %}
+<title>{{ list_title }} | {{ request.intro.name }}</title>
+<meta name="robots" content="none,nosnippet">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endblock %}
+
+{% block add_style %}
+{% compress css inline %}
+<link rel="stylesheet" href="{% static 'vendor/ionicons/css/ionicons.post.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+{% endcompress %}
+
+<link
+ rel="prefetch"
+ as="style" onload="this.rel='stylesheet'"
+ type="font/ttf"
+ href="/static/CACHE/fonts/ionicons.ttf">
+{% endblock %}
+
+{% block page_intro %}
+<div
+ class="intro intro-single route bg-image lazyload img-fluid" 
+ data-safe-defer-class="lazyload"
+ style="background-image: url(/static/img/overlay-bg.jpg)"
+ >
+<div class="overlay-mf"></div>
+{% endblock %}
+{% block intro_title %}<h1 class="intro-title mb-4">{{ list_title }}</h1>{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb "Home" "/" %}
+  {% breadcrumb list_title "." %}
+  {% render_breadcrumbs %}
+{% endblock %}
+
+{% block page_main %}
+<!-- ======= Blog Single Section ======= -->
+<section class="blog-wrapper sect-pt4" id="blog">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="container">
+          <div class="row">
+            <div class="col-12 text-center">
+              <div class="top_ads_class"></div>
+            </div>
+          </div>
+          
+          <div class="row">
+            {% for cls in object_list %}
+            <div class="col-md-6">
+              <div class="card card-blog">
+                <div class="card-img" data-safe-defer-class="card-img">
+                  <img data-src="{{ cls.img_thumb.url }}" width="499px" height="262px" data-sizes="auto" alt="{{ lp.post_title }}" class="lazyload img-thumbnail">
+                  <div class="card-body">
+                    <div class="card-category-box">
+                      <div class="card-category">
+                        <h6 class="category">{{ cls.term }}</h6>
+                      </div>
+                    </div>
+                    <h3 class="card-title"><a href="{{ cls.get_absolute_url }}">{{ cls.title|title }}</a></h3>
+                    <p class="card-description">{{ cls.summary }}</p>
+                  </div>
+                  
+                  <div class="card-footer">
+                    <div class="post-author">
+                      <a href="#">
+                        <span class="author">{{ cls.author }}</span>
+                      </a>
+                    </div>
+                    <div class="post-date">
+                      <span class="ion-ios-clock-outline"></span> {{ cls.create }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% empty %}
+            <h3 class="card-title">{{ for_empty }}</h3>
+            {% endfor %}
+          </div>
+
+          <div class="row">
+            <div class="col-12 text-center">
+              <div class="mid_ads_class"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        {% include 'block/sidebar.html' %}
+      </div>
+    </div>
+  </div>
+</section><!-- End Blog Single Section -->
+{% endblock %}
+
+{% block add_js %}
+  {% compress js file %}
+  <script defer="defer" src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script defer="defer" src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+  <script defer="defer" src="{% static 'js/custom.js' %}"></script>
+  {% endcompress %}
+{% endblock %}
+
+{% block ext_js %}
+{% compress js inline %}
+{% render_ads %}
+{% endcompress %}
+{% endblock %}

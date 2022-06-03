@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
+from django.urls import reverse_lazy
 from django.views.generic import TemplateView, View
-from django.views.generic.edit import FormMixin
+# from django.views.generic.edit import FormMixin
 
 from datetime import datetime, timedelta
 
@@ -11,6 +12,9 @@ from corecode.utils import LoginMixin, IsStaffPermissionMixin
 from sibmail import (
     config as config_sib, forms as frm
 )
+
+def success_subscribe(request):
+    return render(request, 'sibmail/manage/success.html')
 
 class MySIBAccount(LoginMixin, IsStaffPermissionMixin, TemplateView):
     permission_required = 'is_staff'
@@ -108,6 +112,11 @@ class GetListInFolder(LoginMixin, IsStaffPermissionMixin, TemplateView):
 
 class CreateAContact(View):
     template_name = 'sibmail/manage/form.html'
+    success_url = reverse_lazy('sibmail:sub_success')
+
+    def get_success_uri(self):
+        url = self.request.build_absolute_uri(self.success_url)
+        return url
 
     @method_decorator(required_ajax)
     def get(self, *args, **kwargs):
@@ -132,9 +141,13 @@ class CreateAContact(View):
         fname = form.cleaned_data.get('fname')
         optin = form.cleaned_data.get('optin')
 
-        config_sib.create_a_contact(email, FIRSTNAME=fname, OPT_IN=optin)
+        # config_sib.create_a_contact(email, FIRSTNAME=fname, OPT_IN=optin)
 
-        # config_sib.create_doi_contact(email, self.success_url, FNAME=fname, LNAME=lname)
+        config_sib.create_contact_doi(
+            email=email,
+            success_url=self.get_success_uri(),
+            FIRSTNAME=fname
+        )
         
         return JsonResponse("OK", status=200, safe=False)
     

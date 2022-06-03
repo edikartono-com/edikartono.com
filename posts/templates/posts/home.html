@@ -107,6 +107,58 @@
   </div>
 </div><!-- End Counter Section -->
 
+<!-- ======= Portfolio Section ======= -->
+<section id="work" class="portfolio-mf sect-pt4 route">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="title-box text-center">
+          <h3 class="title-a">
+            Portfolio
+          </h3>
+          <p class="subtitle-a">
+            Beberapa project yang pernah kami kerjakan, <a href="{% url 'blog:portf_list' %}">semua portfolio</a>
+          </p>
+          <div class="line-mf"></div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      {% for p in portfolio %}
+      <div class="col-md-4">
+        <div class="work-box">
+          {% if p.screenshot %}
+          <div class="work-img">
+            <img src="{{ p.img_thumb.url }}" width="499px" height="292px" alt="{{ p.project_name }}" class="img-fluid">
+          </div>
+          {% endif %}
+          <div class="work-content">
+            <div class="row">
+              <div class="col-sm-8">
+                <h2 class="w-title">{{ p.project_name }}</h2>
+                <div class="w-more">
+                  <span class="w-ctegory">
+                    {% for tag in p.tags.all %}
+                    {{ tag.name }}, 
+                    {% endfor %}
+                  </span> <br> <span class="w-date">{{ p.project_date }}</span>
+                </div>
+              </div>
+              <div class="col-sm-4">
+                <div class="w-like">
+                  <a href="{% url 'blog:portf_detail' p.slug %}"> <span class="ion-ios-plus-outline"></span></a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+    </div>
+  </div>
+</section><!-- End Portfolio Section -->
+
 <!-- ======= Blog Section ======= -->
 <section id="blog" class="blog-mf sect-pt4 route">
   <div class="container">
