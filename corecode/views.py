@@ -1,13 +1,15 @@
 from django.apps import apps
+from django.contrib import messages
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views.generic import ListView, TemplateView
-from django.views.generic.edit import CreateView
+# from django.utils.decorators import method_decorator
+from django.views.generic import DetailView, TemplateView, View
+from django.views.generic.edit import CreateView, FormMixin
 
-from corecode import models as cmd, sweetify, settings
+from corecode import models as cmd, sweetify, settings, forms as frm
+from corecode.shortcuts import query
 from corecode.utils import CreateChart, IsStaffPermissionMixin, LoginMixin
-from posts.models import Terms
 
 import json
 
@@ -60,6 +62,7 @@ class DashboardStaff(LoginMixin, IsStaffPermissionMixin, TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         from django.db.models import Count
+        from posts.models import Terms
         make_chart = create_chart.query_prefetch_related(
             Terms, 'posts_set', 'posts__term', term_name__count=Count('posts__term')
         )
@@ -70,9 +73,61 @@ class DashboardStaff(LoginMixin, IsStaffPermissionMixin, TemplateView):
         context['chart'] = make_chart
         return context
 
-class KontakViews(ListView):
+class KontakViews(FormMixin, View):
     template_name = 'core/kontak.html'
-    model = cmd.Contact
+    success_url = reverse_lazy('blog:kontak')
+    
+    def get_form(self, form_class=None):
+        form_class = frm.FormContactUs
+        return form_class(**self.get_form_kwargs())
+    
+    def get_obj(self):
+        obj = query(cmd.Contact)
+        return obj
+    
+    def get(self, *args, **kwargs):
+        context = {}
+        context['form'] = self.get_form()
+        context['obj'] = self.get_obj()
+        return render(self.request, self.template_name, context)
+    
+    def form_invalid(self, form) -> HttpResponse:
+        context = {}
+        context['form'] = form
+        context['obj'] = self.get_obj()
+        return render(self.request, self.template_name, context)
+    
+    def form_valid(self, form):
+        msg = form.save(commit=False)
+        if self.request.user.is_authenticated:
+            msg.user_id = self.request.user
+        
+        msg.save()
+        messages.add_message(self.request, messages.SUCCESS, "Email Anda telah dikirim")
+        return redirect(self.success_url)
+    
+    def post(self, *args, **kwargs):
+        form = self.get_form(self.request.POST)
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+class PortfolioListView(TemplateView):
+    template_name = 'core/portfolio_list.html'
+    
+    def get_context_data(self, *args, **kwargs):
+        context = super(PortfolioListView, self).get_context_data(*args, **kwargs)
+        from .utils import HomePage, paginate_me
+        p = HomePage()
+        page = paginate_me(self.request, p.portfolio(), 9)
+        context['portfolio'] = page
+        context['list_title'] = 'Portfolio'
+        return context
+
+class PortfolioDetailView(DetailView):
+    model = cmd.Portfolio
+    template_name = 'core/portfolio.html'
 
 class SweetyfyMixin(object):
     success_message = ""

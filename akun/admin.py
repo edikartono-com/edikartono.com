@@ -3,7 +3,6 @@ from django.db.models.base import ModelBase
 
 from akun import models as amd
 
-# https://realpython.com/customize-django-admin-python/#customizing-the-django-admin
 @admin.register(amd.Comments)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ['post', 'teks', 'reply', 'cmdate','active','is_spam','is_deleted']

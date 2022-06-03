@@ -29,6 +29,7 @@
     function showPopup(){
         setCookie('shown', true, 1);
         Swal.fire({
+            // Title: sesuaikan dengan website Anda
             title: "Mau dapat tutorial django melalui email?",
             icon: "question",
             showCancelButton: true,

@@ -1,8 +1,9 @@
 from django.contrib.auth.models import User
-from django.forms import Form, ModelForm
+from django.forms import ModelForm
 
 from akun import models as mak
 from corecode import validation
+from corecode.widgets import TagAutoComplete
 
 class FormCommentUser(ModelForm):
     class Meta:
@@ -41,3 +42,6 @@ class FormBio(ModelForm):
     class Meta:
         model = mak.BioAccount
         exclude = ['akun']
+        widgets = {
+            'skills': TagAutoComplete('taggit.tag')
+        }

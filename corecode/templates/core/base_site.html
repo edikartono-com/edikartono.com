@@ -1,4 +1,4 @@
-{% load i18n static django_seo_js %}
+{% load i18n static django_seo_js compress %}
 {% get_current_language as LANGUAGE_CODE %}
 
 <!DOCTYPE html>
@@ -24,13 +24,14 @@
     <link href="{% static 'img/favicon.svg' %}" rel="icon" sizes="any" type="image/svg+xml">
     <link rel="dns-prefetch" href="https://www.googletagmanager.com">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.min.css" integrity="sha512-H0axURIL0aVKXvSdDPjG8ulhLGy/eVuL7BlKldIC6tmLGTNWRyDGeLmt9Zw3a5PTjNkxqx5ssqUSD9AiFbFhSQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     
     {% block add_style %}
+    {% compress css file %}
     <link href="{% static 'css/home.css' %}" rel="stylesheet">
-    
-    <link rel="stylesheet" href="{% static 'vendor/ionicons/css/ionicons.home.css' %}">
-    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link href="{% static 'vendor/ionicons/css/ionicons.home.css' %}" rel="stylesheet">
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'vendor/sweetalert2/sweetalert2.min.css' %}" />
+    {% endcompress %}
 
     <link
     rel="prefetch"
@@ -39,15 +40,19 @@
     {% endblock %}
 
     <!-- Template Main CSS File  -->
+    {% compress css inline %}
     <link href="{% static 'css/style.css' %}" rel="stylesheet">
-
+    
     <style>
       body.swal2-shown > [aria-hidden="true"] {transition: 0.1s filter;filter: blur(10px);}
     </style>
+    {% endcompress %}
     
-    <script src="{% static 'js/lazysizes.min.js' %}" async="async"></script>
+    {% compress js file %}
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.all.min.js" integrity="sha512-HL3ljb5fSrMMfAiRxSP+EdI/KC1kl6gVIzCV7GaJ4yFWCpnrcGxPAmytnKk9KNigFhyICxOlgD+uuaS07t7RdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="{% static 'js/lazysizes.min.js' %}"></script>
+    <script src="{% static 'vendor/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    {% endcompress %}
     <!-- Template Name: DevBlog - v0.0.1b -->
     <!-- =======================================================
         * Template Name: DevFolio - v2.3.0
@@ -189,19 +194,24 @@
   
     
     {% block add_js %}
-    <!-- Vendor JS Files -->
-    <script defer src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script defer src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}"></script>
-    <script defer src="{% static 'vendor/waypoints/jquery.waypoints.min.js' %}"></script>
-    <script defer src="{% static 'vendor/counterup/jquery.counterup.min.js' %}"></script>
-    <script defer src="{% static 'vendor/owl.carousel/owl.carousel.min.js' %}"></script>
-    <script defer src="{% static 'vendor/typed.js/typed.min.js' %}"></script>
-    <script defer src="{% static 'vendor/venobox/venobox.min.js' %}"></script>
-    <!-- Template Main JS File -->
-    <script defer="defer" src="{% static 'js/main.js' %}"></script>
+    {% compress js file %}
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'vendor/waypoints/jquery.waypoints.min.js' %}"></script>
+    <script src="{% static 'vendor/counterup/jquery.counterup.min.js' %}"></script>
+    <script src="{% static 'vendor/owl.carousel/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'vendor/typed.js/typed.min.js' %}"></script>
+    <script src="{% static 'vendor/venobox/venobox.min.js' %}"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+    {% endcompress %}
     {% endblock %}
     
     {% block ext_js %}{% endblock %}
+    {% if request.user.is_anonymous %}
+    {% compress js file %}
+    <script src="{% static 'js/new.contact.js' %}"></script>
+    {% endcompress %}
+    {% endif %}
   </body>
   
 </html>

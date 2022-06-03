@@ -68,6 +68,11 @@ class CounterAdmin(admin.ModelAdmin):
                 return False
         return True
 
+@admin.register(cmd.ContactUs)
+class ContactUsAdmin(admin.ModelAdmin):
+    list_display = ['your_name', 'subject','incoming_at','read']
+    search_fields = ['your_name','your_email','incoming_at']
+
 admin.site.unregister(Group)
 class GroupAdmin(admin.ModelAdmin):
     form = frm.GroupAdminForm

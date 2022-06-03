@@ -1,6 +1,8 @@
 from django import template
 from django.apps import apps
 
+from corecode.shortcuts import get_query_cached
+
 register = template.Library()
 file_html = 'core/block/meta_tags.html'
 
@@ -14,7 +16,12 @@ def post_detail_tag(context, app_label, model_name, post_id):
     mymodel = apps.get_model(app_label, model_name)
     request = context['request']
     try:
-        meta_data = mymodel.objects.get(id=post_id)
+        # meta_data = mymodel.objects.get(id=post_id)
+        meta_data = get_query_cached(
+            mymodel,
+            str(app_label) + "_" + str(post_id),
+            id=post_id
+        )
         return { 'post_meta': meta_data, 'current_site': request }
     except mymodel.DoesNotExist:
         pass

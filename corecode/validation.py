@@ -2,7 +2,11 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 
 suffixes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB']
-huruf_saja = RegexValidator('[a-zA-Z\s]+$', 'Hanya huruf dan spasi')
+only_latters = RegexValidator('[a-zA-Z,.\s]+$', 'Pastikan hanya huruf, spasi, titik, dan koma')
+phone_number = RegexValidator(
+    r'^(?:07|08|\+?628)\s?(?:\d\s?){6,12}',
+    "Nomor HP diawali: 628 or 08 or 07. Minimal 8 digit"
+)
 
 def _sizeof_file(img_size):
     i = 0
@@ -31,7 +35,16 @@ def image_validator(cleaned_data, img_field, img_size):
     if img_get:
         imgsize = float(img_get.size / 1048576)
         if img_get.size > img_size:
-            raise ValidationError("Maks file berukuran "+ humanize +", file kamu %.2f MB" % imgsize)
+            raise ValidationError(
+                "Maks file berukuran "+ humanize +", file kamu %.2f MB" % imgsize
+            )
         return img_get
     else:
         raise ValidationError("Silahkan pilih gambar terlebih dahulu")
+
+def only_number(minnum, maxnum):
+    regex = r'^[0-9]{' + str(minnum) + ',' + str(maxnum) + '}$'
+    return RegexValidator(
+        regex,
+        'Pastikan hanya angka. {min} sampai {max} digit'.format(min=minnum, max=maxnum)
+    )

@@ -1,5 +1,8 @@
-from django.core.validators import MaxLengthValidator, MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import User
+from django.core.validators import MaxLengthValidator, MinLengthValidator, MaxValueValidator, MinValueValidator
 from django.db import models
+from django.urls import reverse_lazy
+from django.utils import timezone
 from django.utils.text import slugify
 
 from ckeditor_uploader.fields import RichTextUploadingField
@@ -7,6 +10,8 @@ from imagekit.models import ImageSpecField, ProcessedImageField
 from imagekit.processors import ResizeToFill
 
 from uuid import uuid4
+
+from corecode.manager import CustomManager, TaggableManager, UUIDTaggedItem
 
 class Intro(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
@@ -80,6 +85,72 @@ class Contact(models.Model):
     def __str__(self) -> str:
         return self.title
 
+class ContactUs(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    your_name = models.CharField(max_length=100, validators=[MinLengthValidator(4)])
+    your_email = models.EmailField()
+    subject = models.CharField(max_length=100)
+    message = models.TextField(validators=[MaxLengthValidator(1000)])
+
+    incoming_at = models.DateTimeField(auto_now_add=True)
+    message_updated = models.DateTimeField(auto_now=True)
+
+    user_id = models.ForeignKey(
+        User, on_delete=models.SET_NULL,
+        blank=True, null=True
+    )
+
+    reply = models.ForeignKey(
+        'self', on_delete=models.SET_NULL, related_name='email_reply',
+        blank=True, null=True
+    )
+
+    in_trash = models.BooleanField(default=False)
+    trahsed_by = models.ForeignKey(
+        User, on_delete=models.SET_NULL,
+        blank=True, null=True, related_name='user_trashed_email'
+    )
+    read = models.BooleanField(default=False)
+    unread = models.BooleanField(default=True)
+
+
+    objects = CustomManager()
+    all_objects = models.Manager()
+
+    class QuerySet(models.QuerySet):
+        def all_unread(self, **kwargs):
+            result = self.filter(unread=True, reply=None, **kwargs)
+            return result
+        
+        def all_read(self, **kwargs):
+            result = self.filter(read=True, reply=None, **kwargs)
+            return result
+        
+        def all_in_trash(self, **kwargs):
+            result = self.filter(in_trash=True, **kwargs)
+            return result
+    
+    def mark_as_read(self):
+        self.read = True
+        self.unread = False
+        self.message_updated = timezone.now()
+        self.save()
+    
+    def mark_as_unread(self):
+        self.read = False
+        self.unread = True
+        self.message_updated = timezone.now()
+        self.save()
+    
+    def trashed(self, uid=None):
+        self.in_trash = True
+        self.trahsed_by = uid
+        self.message_updated = timezone.now()
+        self.save()
+    
+    def __str__(self) -> str:
+        return "{n}: {s}".format(n=self.your_name, s=self.subject)
+
 class CounterSec(models.Model):
     name = models.CharField(max_length=25, unique=True)
     countd = models.IntegerField()
@@ -96,21 +167,28 @@ class CounterSec(models.Model):
         return "{} {}".format(self.name, self.countd)
 
 def upload_to_path(instance, filename):
-    return 'portofolio/{0}/{1}'.format(instance.term, filename)
+    return 'portfolio/{0}/{1}'.format(instance.user.username, filename)
 
-class Portofolio(models.Model):
+class Portfolio(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_portofolio')
     project_name = models.CharField(max_length=100, unique=True)
+    project_date = models.DateField()
     description = RichTextUploadingField()
     source = models.URLField(blank=True, null=True)
 
-    screenshot = models.ImageField(upload_to = upload_to_path, null=True, blank=True)
+    screenshot = models.ImageField(upload_to = upload_to_path)
     youtube_video = models.URLField(blank=True, null=True)
+    tags = TaggableManager(blank=True, through=UUIDTaggedItem)
+    featured = models.BooleanField(default=True)
 
     slug = models.SlugField(
         blank=True, null=True, unique=True,
         help_text="Teks dan tanda (-), jika dikosongkan otomatis diambil dari project_name"
     )
+
+    portfolio_add = models.DateTimeField(auto_now_add=True)
+    portfolio_modified = models.DateTimeField(auto_now=True)
 
     img_thumb = ImageSpecField(
         source='screenshot',
@@ -119,10 +197,16 @@ class Portofolio(models.Model):
         options={'quality':80}
     )
 
+    class Meta:
+        ordering = ['-project_date']
+    
+    def get_absolute_url(self, **kwargs):
+        return reverse_lazy('blog:portf_detail', kwargs={"slug": self.slug})
+
     def save(self):
-        if self.screenshot == None:
-            self.screenshot = slugify(self.project_name)
-        super(Portofolio, self).save()
+        if self.slug == None:
+            self.slug = slugify(self.project_name)
+        super(Portfolio, self).save()
     
     def __str__(self) -> str:
         return self.project_name

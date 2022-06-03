@@ -1,7 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.db.models import Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse_lazy
@@ -13,7 +12,7 @@ from django.views.generic.edit import FormMixin
 from akun import forms as frm, models as mak
 from allauth.account.forms import LoginForm
 from corecode.encoder import url_decode
-from corecode.shortcuts import filter_qurey, query, required_ajax
+from corecode.shortcuts import filter_query, get_query_cached, query, required_ajax
 from corecode.utils import LoginMixin, paginate_me
 
 @login_required
@@ -40,7 +39,7 @@ def permanent_delete(request, pk):
 @login_required
 @required_ajax
 def all_spam_clean(request):
-    qs = filter_qurey(mak.Comments, user=request.user, is_spam=True)
+    qs = filter_query(mak.Comments, user=request.user, is_spam=True)
     qs.delete()
     return JsonResponse("OK", safe=False)
 
@@ -65,8 +64,12 @@ class UpdateMyGeneralProfile(LoginMixin, FormMixin, View):
     template_name = 'akun/profile/form.html'
 
     def instance_m(self):
-        um = query(User).get(username=self.request.user)
-        ge = query(mak.MyAkun).get(user=self.request.user)
+        um = get_query_cached(
+            User, "ins_" + self.request.user.id, username=self.request.user
+        )
+        ge = get_query_cached(
+            mak.MyAkun, 'mak_' + self.request.user.id, user=self.request.user
+        )
         return um, ge
 
     @method_decorator(required_ajax)
@@ -114,11 +117,10 @@ class UpdateOrCreateBio(LoginForm, FormMixin, View):
     @method_decorator(required_ajax)
     def get(self, *args, **kwargs):
         bio = self.qs_bio()
-        print(bio)
         form = frm.FormBio
 
-        if self.qs_bio():
-            form = frm.FormBio(instance=self.qs_bio())
+        if bio:
+            form = frm.FormBio(instance=bio)
         
         context = {
             "form" : form,

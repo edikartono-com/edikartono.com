@@ -1,7 +1,7 @@
-from django.db.models.signals import post_save, post_delete, pre_save
+from django.db.models.signals import post_save #, post_delete, pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import User
-from corecode.signals import delete_file_after_delete, delete_file_after_update
+# from corecode.signals import delete_file_after_delete, delete_file_after_update
 
 from akun.models import MyAkun
 

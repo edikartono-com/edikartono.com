@@ -1,0 +1,110 @@
+{% extends 'core/base_site.html' %}
+{% load static breadcrumbs tagads compress %}
+
+{% block add_meta %}
+<title>{{ list_title }} | {{ request.intro.name }}</title>
+{% if desc_term %}
+<meta content="{{ desc_term.term_desc }}" name="description" />
+{% endif %}
+{% if request.GET.q %}
+<link rel="canonical" href="https://edikartono.com/search/q?q={{ request.GET.q }}">
+{% else %}
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+{% endif %}
+{% endblock %}
+
+{% block add_style %}
+{% compress css inline %}
+<link rel="stylesheet" href="{% static 'vendor/ionicons/css/ionicons.post.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+{% endcompress %}
+
+<link
+ rel="prefetch"
+ as="style" onload="this.rel='stylesheet'"
+ type="font/ttf"
+ href="/static/CACHE/fonts/ionicons.ttf">
+{% endblock %}
+
+{% block page_intro %}
+<div
+ class="intro intro-single route bg-image lazyload img-fluid" 
+ data-safe-defer-class="lazyload"
+ style="background-image: url(/static/img/overlay-bg.jpg)"
+ >
+<div class="overlay-mf"></div>
+{% endblock %}
+{% block intro_title %}<h1 class="intro-title mb-4">{{ list_title }}</h1>{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb "Home" "/" %}
+  {% breadcrumb list_title "." %}
+  {% render_breadcrumbs %}
+{% endblock %}
+
+{% block page_main %}
+<section id="work" class="portfolio-mf sect-pt4 route">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="title-box text-center">
+            <h3 class="title-a">
+              Portfolio
+            </h3>
+            <p class="subtitle-a">
+              Semua Portfolio Kami
+            </p>
+            <div class="line-mf"></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        {% for p in portfolio %}
+        <div class="col-md-4">
+          <div class="work-box">
+            {% if p.screenshot %}
+            <div class="work-img">
+              <img src="{{ p.img_thumb.url }}" alt="{{ p.project_name }}" class="img-fluid">
+            </div>
+            {% endif %}
+            <div class="work-content">
+              <div class="row">
+                <div class="col-sm-8">
+                  <h2 class="w-title">{{ p.project_name }}</h2>
+                  <div class="w-more">
+                    <span class="w-ctegory">
+                      {% for tag in p.tags.all %}
+                      {{ tag.name }}, 
+                      {% endfor %}
+                    </span> <br> <span class="w-date">{{ p.project_date }}</span>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="w-like">
+                    <a href="{% url 'blog:portf_detail' p.slug %}"> <span class="ion-ios-plus-outline"></span></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+  
+      </div>
+    </div>
+  </section><!-- End Portfolio Section -->
+{% endblock %}
+
+{% block add_js %}
+  {% compress js file %}
+  <script defer="defer" src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script defer="defer" src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+  <script defer="defer" src="{% static 'js/custom.js' %}"></script>
+  {% endcompress %}
+{% endblock %}
+
+{% block ext_js %}
+{% compress js inline %}
+{% render_ads %}
+{% endcompress %}
+{% endblock %}

@@ -1,7 +1,7 @@
 import os
 from django.db.models.signals import post_delete, pre_save
 from django.dispatch import receiver
-from corecode.models import Intro, Poster, Portofolio
+from corecode.models import Intro, Poster, Portfolio
 from imagekit.exceptions import MissingSource
 
 def _rfields(instance, fields):
@@ -74,10 +74,10 @@ def poster_after_delete(sender, instance, **kwargs):
 def poster_after_update(sender, instance, **kwargs):
     delete_file_after_update(sender, instance, 'image')
 
-@receiver(post_delete, sender=Portofolio)
+@receiver(post_delete, sender=Portfolio)
 def portos_after_delete(sender, instance, **kwargs):
     delete_file_after_delete(instance, 'screenshot', 'img_thumb')
 
-@receiver(pre_save, sender=Portofolio)
+@receiver(pre_save, sender=Portfolio)
 def portos_after_update(sender, instance, **kwargs):
     delete_file_after_update(sender, instance, 'screenshot', 'img_thumb')

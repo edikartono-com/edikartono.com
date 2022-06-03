@@ -1,0 +1,78 @@
+{% extends 'core/base_site.html' %}
+{% load static head_tags breadcrumbs compress %}
+
+{% block add_style %}
+<link
+    rel="prefetch"
+    as="style" onload="this.rel='stylesheet'"
+    type="font/ttf"
+    href="/static/CACHE/fonts/ionicons.ttf">
+{% compress css inline %}
+<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'vendor/ionicons/css/ionicons.post.css' %}">
+{% endcompress %}
+{% endblock %}
+
+{% block add_meta %}
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<title>Edi Kartono Project {{ object.project_name }}</title>
+{% endblock %}
+
+{% block page_intro %}
+<div
+ class="intro intro-single route bg-image lazyload img-fluid"
+ style="background-image: url('{{ object.screenshot.url }}')"
+ data-safe-defer-class="lazyload">
+<div class="overlay-mf"></div>
+{% endblock %}
+{% block intro_title %}<div class="intro-title mb-4">{{ blog.title }}</div>{% endblock %}
+
+{% block breadcrumb %}
+  {% breadcrumb "Home" "/" %}
+  {% breadcrumb object.user.username "." %}
+  {% breadcrumb object.project_name object.slug %}
+  {% render_breadcrumbs %}
+{% endblock %}
+
+{% block page_main %}
+<!-- ======= Portfolio Details Section ======= -->
+<section class="portfolio-details">
+    <div class="container">
+
+      <div class="portfolio-details-container">
+
+        <div class="owl-carousel portfolio-details-carousel">
+          <img src="{{ object.screenshot.url }}" class="img-fluid" alt="{{ object.project_name }}">
+        </div>
+
+        <div class="portfolio-info">
+          <h3>Project information</h3>
+          <ul>
+            <li><strong>Category</strong>: {% for t in object.tags.all %}{{ t.name }}, {% endfor %}</li>
+            <li><strong>Client</strong>: --</li>
+            <li><strong>Project date</strong>: {{ object.project_date }}</li>
+            <li><strong>Project URL</strong>: {% if object.source %}<a href="{{ object.get_absolute_url }}">{{ object.project_name }}</a>{% endif %}</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="portfolio-description">
+        <h2>Portfolio Detail {{ object.project_name }}</h2>
+        <p>
+          {{ object.description|safe }}
+        </p>
+      </div>
+    </div>
+  </section><!-- End Portfolio Details Section -->
+{% endblock %}
+
+{% block add_js %}
+{% compress js %}
+<script defer src="{% static 'vendor/bootstrap/js/bootstrap.bundle.js' %}" ></script>
+<script defer src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}" ></script>
+  <!-- Template Main JS File -->
+<script defer src="{% static 'js/custom.js' %}"></script>
+{% endcompress %}
+{% endblock %}

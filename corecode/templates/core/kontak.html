@@ -1,64 +1,255 @@
-{% extends 'core/base_site.html' %}
-{% load static %}
+{% load i18n static django_seo_js widget_tweaks %}
+{% get_current_language as LANGUAGE_CODE %}
 
-{% block add_style %}
-<link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
-<link rel="preload"
-  as="style" onload="this.onload.null;this.rel='stylesheet'"
-  href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-  integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
-  crossorigin="anonymous"/>
-  
-<script defer="preload">
-// Later on, after some condition has been met, we run the preloaded
-// JavaScript by inserting a <script> tag into the DOM.
-  var usedLaterScript = document.createElement('script');
-  usedLaterScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js';
-  document.getElementsByTagName('head')[0].appendChild(usedLaterScript);
-</script>
-{% endblock %}
-
-
-{% block add_meta %}
-<title>Kontak | Edi Kartono Terhubung Dengan Kami</title>
-<meta name="description" content="Terhubung dengan Edi Kartono melalui sosial media yang Anda miliki sekarang">
-<link rel="canonical" href="{{ request.build_absolute_uri }}">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-{% endblock %}
-
-{% block page_main %}
-<!-- ======= Blog Single Section ======= -->
-<section class="blog-wrapper sect-pt4" id="blog">
-    <div class="container">
-        <div class="row">
-            {% for bio in object_list %}
-            <div class="col-sm-6">
-                <div class="card border-primary card-primary mb-3">
-                    <div class="card-header">
-                        {{ bio.title|title }}
-                    </div>
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    {% seo_js_head %}
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-                    <div class="card-body text-primary">
+    <title>Kontak | Edi Kartono Terhubung Dengan Kami</title>
+    <meta name="description" content="Terhubung dengan Edi Kartono melalui sosial media yang Anda miliki sekarang">
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <!-- Favicons -->
+    <link href="{% static 'img/favicon.ico' %}" rel="icon" type="image/x-icon">
+    <link href="{% static 'img/apple-touch-icon.png' %}" rel="apple-touch-icon">
+    <link href="{% static 'img/favicon.svg' %}" rel="icon" sizes="any" type="image/svg+xml">
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    
+    <link rel="stylesheet" href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}">
+    <link rel="preload"
+    as="style" onload="this.onload.null;this.rel='stylesheet'"
+    href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+    integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p"
+    crossorigin="anonymous"/>
+    
+    <script defer="preload">
+    // Later on, after some condition has been met, we run the preloaded
+    // JavaScript by inserting a <script> tag into the DOM.
+    var usedLaterScript = document.createElement('script');
+    usedLaterScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js';
+    document.getElementsByTagName('head')[0].appendChild(usedLaterScript);
+    </script>
+    
+    <!-- Template Main CSS File  -->
+    <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+    <style>
+        body.swal2-shown > [aria-hidden="true"] {transition: 0.1s filter;filter: blur(10px);}.footer-paralax {padding: 1.2rem 0 0 0;}.contact-mf{margin-top: 1.2rem;}@media (min-width: 767px){.contact-mf .box-pl2 {margin-top: 1rem;padding-left: 0rem;}}
+    </style>
+    
+    <script src="{% static 'js/lazysizes.min.js' %}" async="async"></script>
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.3.0/sweetalert2.all.min.js" integrity="sha512-HL3ljb5fSrMMfAiRxSP+EdI/KC1kl6gVIzCV7GaJ4yFWCpnrcGxPAmytnKk9KNigFhyICxOlgD+uuaS07t7RdQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- Template Name: DevBlog - v0.0.1b -->
+</head>
+<body>
+    <!-- ======= Header/ Navbar ======= -->
+    <nav class="navbar navbar-b navbar-expand-md fixed-top navbar-reduce" id="mainNav">
+      <div class="container">
+        <a class="navbar-brand js-scroll" href="{% url 'blog:index' %}">Edi Kartono</a>
+        <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarDefault" aria-controls="navbarDefault" aria-expanded="false" aria-label="Toggle navigation">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+        <div class="navbar-collapse collapse justify-content-end" id="navbarDefault">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link js-scroll" href="/#about">About</a>
+            </li>
+            {% for menu in main_menu %}
+            <li class="nav-item">
+              <a class="nav-link js-scroll" href="{{ menu.get_absolute_url }}">{{ menu.name }}</a>
+            </li>
+            {% endfor %}
+            {% comment %}
+            <!-- <li class="nav-item">
+              <a class="nav-link js-scroll" href="{% url 'product:lists' %}">Produk</a>
+            </li> -->
+            {% endcomment %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  
+    <main id="main">
+    {% block page_main %}
+    <!-- ======= Contact Section ======= -->
+    <section class="paralax-mf footer-paralax bg-image sect-mt4 route" style="background-image: url(assets/img/overlay-bg.jpg)">
+        <div class="overlay-mf"></div>
+        <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+            <div class="contact-mf">
+                <div id="contact" class="box-shadow-full">
+                <div class="row">
+                    <div class="col-md-6">
+                    <div class="title-box-2">
+                        <h5 class="title-left">
+                        Send Message Us
+                        </h5>
+                    </div>
+                    <div>
+                        <form method="post" role="form" class="php-email-form">
+                            {% csrf_token %}
+
                         <div class="row">
-                            <div class="col-3"><i class="{{ bio.icon }} fa-4x"></i></div>
-                            <div class="col">
-                                {% if bio.link %}
-                                <h3 class="card-link">
-                                    <a class="btn btn-primary" href="{{ bio.link }}" target="_blank" rel="noopener noreferrer">{{ bio.title|title }}</a>
-                                </h3>
-                                {% else %}
-                                <h3 class="card-title">{{ bio.title|title }}</h3>
+                          {% for field in form %}
+                            <div class="col-md-12 mb-3">
+                              <div class="form-group">
+                                {% render_field field class="form-control" placeholder=field.label %}
+                                {% if field.help_text %}
+                                <div class="form-text text-muted"><small>{{ field.help_text }}</small></div>
                                 {% endif %}
-                                <p class="card-description">
-                                    {{ bio.body|safe }}
-                                </p>
+                                {% if field.errors %}
+                                  {% for error in field.errors %}
+                                  <div class="alert alert-warning"><small>{{ error | striptags }}</small></div>
+                                  {% endfor %}
+                                {% endif %}
+                              </div>
+                            </div>
+                          {% endfor %}
+                            <div class="col-md-12 text-center">
+                            <button type="submit" class="button button-a button-big button-rouded">Send Message</button>
                             </div>
                         </div>
+                        </form>
+                    </div>
+                    </div>
+                    <div class="col-md-6">
+                    <div class="title-box-2 pt-4 pt-md-0">
+                        <h5 class="title-left">
+                        Get in Touch
+                        </h5>
+                    </div>
+                    <div class="more-info">
+                        <p class="lead">
+                        
+                        </p>
+                        <ul class="list-ico">
+                        <li><span class="ion-ios-location"></span> Baturaja, Ogan Komering Ulu. Sumatera Selatan</li>
+                        <li><span class="ion-ios-telephone"></span> (62) 8154 0450 02</li>
+                        <li><span class="ion-email"></span> bisnis@edikartono.com</li>
+                        </ul>
+                    </div>
+                    <div class="socials">
+                        <ul>
+                            {% for bio in obj %}
+                            <li class="mb-3">
+                                <a href="{{ bio.link }}" target="_blank" rel="noopener noreferrer" title="{{ bio.title|title }}">
+                                    <span class="ico-circle"><i class="{{ bio.icon }}"></i></span>
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
                     </div>
                 </div>
+                </div>
             </div>
-            {% endfor %}
+            </div>
         </div>
-    </div>
-</section><!-- End Blog Single Section -->
-{% endblock %}
+        </div>
+    </section><!-- End Contact Section -->
+    {% endblock %}
+      
+    </main><!-- End #main -->
+  
+    <!-- ======= Footer ======= -->
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-6">
+            <div class="copyright-box">
+              <div class="copyright">
+                <div class="credits">                
+                  <ul class="nav">
+                    {% for page in page_menu %}
+                    <li class="nav-item">
+                      <a href="{{ page.get_absolute_url }}" class="nav-link">{{ page.title }}</a>
+                    </li>
+                    {% endfor %}
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item">
+                      <a href="{% url 'core:cek_user' %}" class="nav-link">Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="{% url 'account_logout' %}" class="nav-link form-btn">Logout</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                      <a href="{% url 'account_login' %}" class="nav-link form-btn">Login</a>
+                    </li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="copyright-box">
+              <p class="copyright">&copy; Copyright <strong>{{ request.intro.name }}</strong>. All Rights Reserved</p>
+              <div class="credits">
+                Template DevBlog v0.0.1b Fork of DevFolio - v2.3.0
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer><!-- End  Footer -->
+  
+    <a href="#" class="back-to-top"><span class="ion-chevron-up"></span></a>
+    <div id="preloader"></div>
+    {% if messages %}
+    {% for message in messages %}
+        <script>
+            $(document).ready(function(){
+                $(function(){
+                    const elemnt = document.createElement('div');
+                    elemnt.setAttribute('class', 'alert {{ message.tags }} alert-dismissible')
+                    elemnt.innerHTML = '{{ message|safe|capfirst }}';
+                    Swal.fire({
+                        icon: '{{ message.tags|cut:"alert-" }}',
+                        title: '{{ message.tags|cut:"alert-" }}',
+                        html: elemnt,
+                        timer: 5000,
+                        timerProgressBar: true,
+                        buttonsStyling: false,
+                        allowOutsideClick: false,
+                        customClass: {
+                            confirmButton: 'btn btn-{{ message.tags|cut:"alert-" }}',
+                            popup: 'alert {{ message.tags }}'
+                        }
+                    })
+                })
+            })
+        </script>
+    {% endfor %}
+    {% endif %}
+  
+    
+    {% block add_js %}
+    <!-- Vendor JS Files -->
+    <script defer src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script defer src="{% static 'vendor/jquery.easing/jquery.easing.min.js' %}"></script>
+    <script defer src="{% static 'vendor/waypoints/jquery.waypoints.min.js' %}"></script>
+    <script defer src="{% static 'vendor/counterup/jquery.counterup.min.js' %}"></script>
+    <script defer src="{% static 'vendor/owl.carousel/owl.carousel.min.js' %}"></script>
+    <script defer src="{% static 'vendor/typed.js/typed.min.js' %}"></script>
+    <script defer src="{% static 'vendor/venobox/venobox.min.js' %}"></script>
+    <!-- Template Main JS File -->
+    <script defer="defer" src="{% static 'js/kontak.js' %}"></script>
+    {% endblock %}
+    
+    {% block ext_js %}{% endblock %}
+    {% if not request.user.is_authenticated %}
+    <script defer src="{% static 'js/new.contact.js' %}"></script>
+    {% endif %}
+  </body>
+  
+</html>

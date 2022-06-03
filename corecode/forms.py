@@ -3,8 +3,17 @@ from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
-from corecode.models import Intro, Poster
+from corecode.models import ContactUs, Intro, Poster
 from corecode import validation as img_val
+
+class FormContactUs(forms.ModelForm):
+    class Meta:
+        model = ContactUs
+        fields = ['your_name','your_email','subject','message']
+    
+    def __init__(self, *args, **kwargs):
+        super(FormContactUs, self).__init__(*args, **kwargs)
+        self.fields['your_name'].validators = [img_val.huruf_saja]
 
 class FormIntro(forms.ModelForm):
     class Meta:

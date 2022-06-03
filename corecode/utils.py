@@ -1,8 +1,9 @@
 from django.contrib.auth.mixins import AccessMixin
+from django.core.cache import cache as core_cache
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext as _
 
-from corecode.shortcuts import filter_qurey, query
+from corecode.shortcuts import filter_query_cached, query
 
 COMMA = ","
 SPACE = " "
@@ -96,20 +97,58 @@ class CreateChart:
         return chart_data
 
 class HomePage:
+    def _is_cached(self, qs, key, **kw):
+        obj = core_cache.get(key)
+        timeout = 60*60*24*30
+
+        if obj is None:
+            obj = qs
+            core_cache.set(key, qs, timeout)
+        return obj
+
     def poster(self):
         from corecode.models import Poster
-        poster = Poster.objects.defer().last()
+        poster = self._is_cached(
+            qs=Poster.objects.defer().last(),
+            key='poster'
+        )
         return poster
     
     def featured(self):
         from corecode.models import Featured
-        featured = Featured.objects.defer().all()
+        featured = self._is_cached(
+            qs=Featured.objects.defer().all(),
+            key='featured'
+        )
         return featured
     
     def counter_section(self):
         from corecode.models import CounterSec
-        counter = CounterSec.objects.defer().all()
+        counter = self._is_cached(
+            qs=CounterSec.objects.defer().all(),
+            key='counter'
+        )
         return counter
+    
+    def portfolio(self, user=None, num=None, featured=True):
+        from corecode.models import Portfolio
+
+        if featured:
+            port = Portfolio.objects.filter(featured=True)
+        else:
+            port = Portfolio.objects.all()
+        if user:
+            port = port.filter(user=user)
+        if num:
+            port = port[:num]
+        else:
+            port = port
+        
+        que = self._is_cached(
+            qs=port,
+            key='portfolio'
+        )
+        return que
 
 class IsStaffPermissionMixin(AccessMixin):
     def dispatch(self, request, *args, **kwargs):
@@ -158,11 +197,10 @@ class LoginMixin(IsStaffPermissionMixin):
         return super(IsStaffPermissionMixin, self).dispatch(request, *args, **kwargs)
 
 class SearchRelated:
-    def __init__(self, model=None, filter=None):
+    def __init__(self, model=None):
         self.model = model
-        self.filter = filter
 
-    def random_related(self, num, slug, **filters):
+    def random_related(self, num: int, slug, **filters):
         """ 
         Random Related
         
@@ -179,7 +217,9 @@ class SearchRelated:
         from random import sample
         
         try:
-            my_query = filter_qurey(self.model, **filters).exclude(slug=slug)
+            my_query = filter_query_cached(
+                self.model, 'related_' + str(slug), **filters
+            ).exclude(slug=slug)
         except self.model.DoesNotExist:
             my_query = None
         if my_query:
@@ -192,7 +232,7 @@ class SearchRelated:
                 qs_rand = sample(list(my_query), count)
             return qs_rand
     
-    def lates_post(self, num):
+    def lates_post(self, num, **filters):
         """ 
         lates_post 
 
@@ -207,7 +247,13 @@ class SearchRelated:
         Returns:
             Jumlah row sesuai dengan nilai pada num
         """
-        qs = self.model.objects.all()
+        # qs = filter_query(self.model, **filters)
+        # count = qs.count()
+        # if count >= num:
+        #     qs = qs[:num]
+        # return qs
+
+        qs = filter_query_cached(self.model, 'lates', **filters)
         count = qs.count()
         if count >= num:
             qs = qs[:num]
