@@ -52,7 +52,7 @@ INSTALLED_APPS = [
 
     'ckeditor',
     'ckeditor_uploader',
-    #'compressor',
+    'compressor',
     'django_seo_js',
     'imagekit',
     'taggit',
@@ -96,6 +96,13 @@ TEMPLATES = [
         },
     },
 ]
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': os.path.join(BASE_DIR,'tmp/cache')
+    }
+}
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'),]
@@ -197,6 +204,26 @@ CKEDITOR_UPLOAD_PATH = 'inline-image/'
 # django-htmlmin
 HTML_MINIFY = True
 
+# Django Compressor
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    # compressor
+    'compressor.finders.CompressorFinder',
+]
+
+COMPRESS_ENABLED = True
+
+COMPRESS_STORAGE = 'compressor.storage.BrotliCompressorFileStorage'
+COMPRESS_FILTERS = {
+    'css': [
+        'compressor.filters.css_default.CssRelativeFilter',
+        'compressor.filters.cssmin.rCSSMinFilter'
+    ],
+    'js': ['compressor.filters.jsmin.JSMinFilter']
+}
+COMPRESS_PARSER = 'compressor.parser.BeautifulSoupParser'
+
 # django-seo-js
 SEO_JS_PRERENDER_TOKEN = "123456789abcdefghijkl"
 SEO_JS_ENABLED = True
@@ -283,9 +310,8 @@ python manage.py runserver</code></pre>
 Beberapa masih belum sempurna, seperti yandex.xml yang belum bisa diakses.
 
 # to do
-1. email marketing (subscribe dan newsletter)
-2. dashboard user
-3. Product dan shopping cart
+1. dashboard user
+2. Product dan shopping cart
 
 # Informasi Kontak
 Untuk fitur khusus dan butuh commercial support, Kamu bisa menghubungi saya di:
